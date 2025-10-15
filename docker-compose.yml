@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./back-job-app
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - PORT=5000
+    volumes:
+      - ./back-job-app:/app
+      - /app/node_modules
+  frontend:
+    build: ./front-job-app
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - REACT_APP_API_URL=http://localhost:5000
+    volumes:
+      - ./front-job-app:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
