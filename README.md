@@ -4,10 +4,15 @@ Here I will be uploading a very simple job application management webapp. I will
 
 The plan is simple and I will write it here
 
-React / Astro(?) / SvelteKit Frontend, the front will be simple, I'm thinking react or astro
+React cuz I know it
 
-Expressjs backend OR https://fastapi.tiangolo.com python
+Node / Expressjs because I know it as well
 
 MongoDB for ease of use I feel very comfy with PSQL
 
 and docker to run these all from.
+
+## Used
+
+- [ExpressJS](https://expressjs.com)
+- [Claude][https://claude.ai/new]
