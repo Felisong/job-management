@@ -15,7 +15,7 @@ services:
       - "3000:3000"
     environment:
       - HOST=0.0.0.0
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=http://localhost:5000/api
     volumes:
       - ./front-job-app:/app
       - /app/node_modules
