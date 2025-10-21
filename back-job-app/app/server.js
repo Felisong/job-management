@@ -10,8 +10,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.set("strictQuery", false);
-mongoose.set("debug", true);
+// mongoose.set("strictQuery", false);
+// mongoose.set("debug", true);
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGODB_URI)
