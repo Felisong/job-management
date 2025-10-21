@@ -13,8 +13,10 @@ router.get("/jobs", async (req, res) => {
     const limit = 25;
     const lastJobId = req.query.lastJobId ? req.query.lastJobId : null;
 
-    const query = lastJobId ? { _id: { $lt: new ObjectId(lastJobId) } } : {};
-    console.log(`last job id: `, lastJobId);
+    let query = lastJobId
+      ? { _id: new mongoose.Types.ObjectId(lastJobId) }
+      : {};
+
     const jobs = await JobInfo.find(query)
       .select(`-job_description -other`)
       .sort({ _id: -1 })

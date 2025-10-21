@@ -29,9 +29,9 @@ export default function Home() {
       }
       const data = await res.json();
       console.log(data);
-      setJobs((jobs) => [...jobs, ...data.jobs]);
-      setHasMoreJobs(data.nextExpectedId ? true : false);
-      setLastJobId(data.nextExpectedId?.toString());
+      // setJobs((jobs) => [...jobs, ...data.jobs]);
+      // setHasMoreJobs(data.nextExpectedId ? true : false);
+      // setLastJobId(data.nextExpectedId?.toString());
     } catch (err: any) {
       console.error(`error fetching jobs: `, err);
       setErrMessage(err);
@@ -42,25 +42,25 @@ export default function Home() {
   useEffect(() => {
     fetchJobs();
   }, []);
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      // if  item is intersecting, and more jobs is true, and loading is false!
-      if (entries[0].isIntersecting && hasMoreJobs && !loading) {
-        console.log(`fetching more jobs!`);
-        fetchJobs();
-      }
-    });
-    // if the div exists, then mark it to observe it by the observer
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-    // clean up the observer on unmount!
-    return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [hasMoreJobs, loading]);
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver((entries) => {
+  //     // if  item is intersecting, and more jobs is true, and loading is false!
+  //     if (entries[0].isIntersecting && hasMoreJobs && !loading) {
+  //       console.log(`fetching more jobs!`);
+  //       fetchJobs();
+  //     }
+  //   });
+  //   // if the div exists, then mark it to observe it by the observer
+  //   if (observerRef.current) {
+  //     observer.observe(observerRef.current);
+  //   }
+  //   // clean up the observer on unmount!
+  //   return () => {
+  //     if (observerRef.current) {
+  //       observer.unobserve(observerRef.current);
+  //     }
+  //   };
+  // }, [hasMoreJobs, loading]);
 
   return (
     <div className="p-8">
