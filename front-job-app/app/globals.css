@@ -27,6 +27,14 @@ body {
   display: grid;
   grid-template-rows: 100px 1fr 50px;
 }
+h1,
+h2,
+h3 {
+  font-family: var(--font-julius), sans-serif;
+}
+p {
+  font-family: var(--font-jura), sans-serif;
+}
 
 h1 {
   font-size: 3em;

@@ -10,6 +10,7 @@ router.get("/users", (req, res) => {
 
 router.get("/jobs", async (req, res) => {
   try {
+    // I'll have to change this later to take in a user id if I want to add that functionality.
     const limit = 25;
     const lastJobId = req.query.lastJobId ? req.query.lastJobId : null;
 
@@ -25,7 +26,6 @@ router.get("/jobs", async (req, res) => {
     const hasMore = jobs.length === limit;
     const nextJobId = hasMore ? jobs[jobs.length - 1]._id : null;
 
-    console.log(`jobs: `, jobs);
     res.status(200).json({
       success: true,
       jobs: jobs,
@@ -35,6 +35,16 @@ router.get("/jobs", async (req, res) => {
   } catch (err) {
     console.error(`error in jobs fetch :`, err);
     res.status(500).json({ success: false, message: "Oh meow..." });
+  }
+});
+
+router.delete("/delete-jobs", async (req, res) => {
+  //
+  try {
+    res.status(200).json({ success: true, message: "You deleted them!" });
+  } catch (err) {
+    console.error(`error in delete jobs: `, err);
+    res.status(500).json({ success: false, message: "oh meow meow" });
   }
 });
 

@@ -50,7 +50,7 @@ export default function Home() {
   }, []);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
-      // if  item is intersecting, and more jobs is true, and loading is false!
+      // if  item is intersecting, and more jobs is true, loading is false and initial data loaded correctly
       if (entries[0].isIntersecting && hasMoreJobs && !loading && initialized) {
         console.log(`fetching more jobs!`);
         fetchJobs();
