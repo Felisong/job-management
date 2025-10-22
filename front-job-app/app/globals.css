@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
+@config "../tailwind.config.mjs";
 
 :root {
   --background: #ffffff;
@@ -37,9 +37,7 @@ p,
 button {
   font-family: var(--font-jura), sans-serif;
 }
-button {
-  font-size: clamp(1em, 1.2em, 1.5em);
-}
+
 button:hover,
 button:active {
   color: #d33e19;

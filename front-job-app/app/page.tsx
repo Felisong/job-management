@@ -71,7 +71,7 @@ export default function Home() {
   return (
     <div className="p-4">
       <SearchAndFilters />
-      <button className="mb-4">Add new Job</button>
+      <button className="mb-4 text-2xl">Add new Job</button>
       <div className="bg-secondary-backdrop">
         <JobDisplayList jobs={jobs}></JobDisplayList>
         <div ref={observerRef}></div>
