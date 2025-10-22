@@ -3,6 +3,7 @@
 import type { JobInformationModel } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import JobDisplayList from "./components/JobDisplayList";
+import SearchAndFilters from "./components/SearchAndFilters";
 const baseUrl =
   process.env.NODE_ENV === "development"
     ? process.env.NEXT_PUBLIC_API_URL
@@ -68,9 +69,9 @@ export default function Home() {
   }, [hasMoreJobs, loading]);
 
   return (
-    <div className="p-8">
-      <p>Query and filters will be here</p>
-
+    <div className="p-4">
+      <SearchAndFilters />
+      <button className="mb-4">Add new Job</button>
       <div className="bg-secondary-backdrop">
         <JobDisplayList jobs={jobs}></JobDisplayList>
         <div ref={observerRef}></div>
