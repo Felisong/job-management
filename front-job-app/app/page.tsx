@@ -20,7 +20,6 @@ export default function Home() {
   async function fetchJobs() {
     try {
       setLoading(true);
-      console.log(`this is the id searching: `, typeof lastJobId);
       const url = lastJobId
         ? `${baseUrl}/jobs?lastJobId=${lastJobId}`
         : `${baseUrl}/jobs`;
@@ -72,7 +71,7 @@ export default function Home() {
     <div className="p-8">
       <p>Query and filters will be here</p>
 
-      <div className="bg-amber-950">
+      <div className="bg-secondary-backdrop">
         <JobDisplayList jobs={jobs}></JobDisplayList>
         <div ref={observerRef}></div>
       </div>

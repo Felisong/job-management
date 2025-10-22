@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Julius_Sans_One, Jura } from "next/font/google";
+import { Julius_Sans_One, Jura } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const juliusSansOne = Julius_Sans_One({
   weight: "400",
@@ -38,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${juliusSansOne.variable} ${jura.variable} antialiased h-full`}
+        className={`${juliusSansOne.variable} ${jura.variable} antialiased h-full`}
       >
         <Header />
         {children}
