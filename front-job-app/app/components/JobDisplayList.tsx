@@ -2,19 +2,33 @@
 
 import { JobInformationModel } from "@/types";
 import { DeleteJob } from "../actions/DeleteJob";
+import { useEffect, useState } from "react";
 
 export default function JobDisplayList({
   jobs,
 }: {
   jobs: JobInformationModel[];
 }) {
+  const [displayedJobs, setDisplayedJobs] = useState(jobs);
+
   async function handleDeleteClick(jobId: string) {
     const req = await DeleteJob(jobId);
     console.log(`requesting to delete job, here is the return: `, req);
+    if (req.success) {
+      const cleanedArr = displayedJobs.filter((j) => j._id !== jobId);
+      setDisplayedJobs(cleanedArr);
+    } else {
+      //show toast
+      console.log(`failed to delete`);
+    }
   }
+
+  useEffect(() => {
+    setDisplayedJobs(jobs);
+  }, [jobs]);
   return (
     <ul className="p-2 box-border">
-      {jobs.map((job: JobInformationModel, i) => (
+      {displayedJobs.map((job: JobInformationModel, i) => (
         <li key={job._id} className="my-4 relative">
           <div
             className={`w-8 h-8 rounded absolute right-0 top-0 text-backdrop-primary ${

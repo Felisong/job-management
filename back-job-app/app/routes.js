@@ -41,7 +41,14 @@ router.get("/jobs", async (req, res) => {
 router.delete("/delete-job/:id", async (req, res) => {
   const jobId = req.params.id || "";
   try {
-    res.status(200).json({ success: true, message: "You deleted them!" });
+    const deleteJob = await JobInfo.deleteOne(
+      new mongoose.Types.ObjectId(jobId)
+    );
+    if (deleteJob.deletedCount === 1) {
+      res.status(200).json({ success: true, message: `You deleted ${jobId}!` });
+    } else {
+      throw new Error("Did not delete job");
+    }
   } catch (err) {
     console.error(`error in delete jobs: `, err);
     res.status(500).json({ success: false, message: "oh meow meow" });
