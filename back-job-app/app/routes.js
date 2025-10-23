@@ -38,8 +38,8 @@ router.get("/jobs", async (req, res) => {
   }
 });
 
-router.delete("/delete-jobs", async (req, res) => {
-  //
+router.delete("/delete-job/:id", async (req, res) => {
+  const jobId = req.params.id || "";
   try {
     res.status(200).json({ success: true, message: "You deleted them!" });
   } catch (err) {

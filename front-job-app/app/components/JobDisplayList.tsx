@@ -1,13 +1,17 @@
 "use client";
 
 import { JobInformationModel } from "@/types";
+import { DeleteJob } from "../actions/DeleteJob";
 
 export default function JobDisplayList({
   jobs,
 }: {
   jobs: JobInformationModel[];
 }) {
-  function deleteJob() {}
+  async function handleDeleteClick(jobId: string) {
+    const req = await DeleteJob(jobId);
+    console.log(`requesting to delete job, here is the return: `, req);
+  }
   return (
     <ul className="p-2 box-border">
       {jobs.map((job: JobInformationModel, i) => (
@@ -21,7 +25,7 @@ export default function JobDisplayList({
                 : "bg-green-300"
             }`}
           >
-            <p className="flex justify-center items-center text-2xl">
+            <p className="flex w-full h-full justify-center items-center text-2xl">
               {job.state === "awaiting_response"
                 ? "?"
                 : job.state === "rejected"
@@ -37,7 +41,13 @@ export default function JobDisplayList({
           <p className="text-secondary-text text-xl">{job.job_title}</p>
           <div className="flex justify-between p-4 text-xl items-end">
             <button>Edit</button>
-            <button>Delete</button>
+            <button
+              onClick={() => {
+                handleDeleteClick(job._id);
+              }}
+            >
+              Delete
+            </button>
             <button>View</button>
           </div>
           {i !== jobs.length - 1 && <hr></hr>}
