@@ -38,9 +38,36 @@ router.get("/jobs", async (req, res) => {
   }
 });
 
+router.get("/job-info/:id", async (req, res) => {
+  const jobId = req.params.id || "";
+
+  try {
+    if (!jobId) throw new Error("Not a valid job ID");
+
+    const jobData = await JobInfo.findById(jobId);
+    if (!jobData.company) {
+      throw new Error("Failed to fetch job but communicated with API");
+    }
+    res.status(200).json({
+      success: true,
+      message: "fetched job information successfully.",
+      jobData: jobData,
+    });
+  } catch (err) {
+    console.error("error in job fetch by ID: " + err);
+    res.status(500).json({
+      success: false,
+      message: `Failed to fetch job information: `,
+      err,
+    });
+  }
+});
+
 router.delete("/delete-job/:id", async (req, res) => {
   const jobId = req.params.id || "";
   try {
+    if (!jobId) throw new Error("Not a valid job ID");
+
     const deleteJob = await JobInfo.deleteOne(
       new mongoose.Types.ObjectId(jobId)
     );

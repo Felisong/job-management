@@ -3,17 +3,20 @@
 import { JobInformationModel } from "@/types";
 import { DeleteJob } from "../actions/DeleteJob";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function JobDisplayList({
   jobs,
 }: {
   jobs: JobInformationModel[];
 }) {
+  const router = useRouter();
+  // handles the array inside the component for ease of use
   const [displayedJobs, setDisplayedJobs] = useState(jobs);
 
+  // delete a job
   async function handleDeleteClick(jobId: string) {
     const req = await DeleteJob(jobId);
-    console.log(`requesting to delete job, here is the return: `, req);
     if (req.success) {
       const cleanedArr = displayedJobs.filter((j) => j._id !== jobId);
       setDisplayedJobs(cleanedArr);
@@ -23,9 +26,15 @@ export default function JobDisplayList({
     }
   }
 
+  function handleRedirect(jobId: string, isEditing: boolean = false) {
+    router.push(`/${jobId}/${isEditing}`);
+  }
+
+  // keeps the array updated as jobs loads in more.
   useEffect(() => {
     setDisplayedJobs(jobs);
   }, [jobs]);
+
   return (
     <ul className="p-2 box-border">
       {displayedJobs.map((job: JobInformationModel, i) => (
@@ -54,7 +63,13 @@ export default function JobDisplayList({
           </h2>
           <p className="text-secondary-text text-xl">{job.job_title}</p>
           <div className="flex justify-between p-4 text-xl items-end">
-            <button>Edit</button>
+            <button
+              onClick={() => {
+                handleRedirect(job._id, true);
+              }}
+            >
+              Edit
+            </button>
             <button
               onClick={() => {
                 handleDeleteClick(job._id);
@@ -62,7 +77,13 @@ export default function JobDisplayList({
             >
               Delete
             </button>
-            <button>View</button>
+            <button
+              onClick={() => {
+                handleRedirect(job._id, false);
+              }}
+            >
+              View
+            </button>
           </div>
           {i !== jobs.length - 1 && <hr></hr>}
         </li>
