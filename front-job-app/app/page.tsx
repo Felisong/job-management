@@ -29,7 +29,6 @@ export default function Home() {
         throw new Error(`Unable to fetch from API`);
       }
       const data = await res.json();
-      console.log(data);
       setJobs((jobs) => [...jobs, ...data.jobs]);
       setHasMoreJobs(data.nextExpectedId ? true : false);
       setLastJobId(data.nextExpectedId?.toString());
@@ -52,7 +51,6 @@ export default function Home() {
     const observer = new IntersectionObserver((entries) => {
       // if  item is intersecting, and more jobs is true, loading is false and initial data loaded correctly
       if (entries[0].isIntersecting && hasMoreJobs && !loading && initialized) {
-        console.log(`fetching more jobs!`);
         fetchJobs();
       }
     });

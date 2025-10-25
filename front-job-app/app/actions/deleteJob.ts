@@ -6,7 +6,6 @@ const baseUrl =
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 export async function DeleteJob(jobId: string) {
   try {
-    console.log(`alright sending: `, jobId);
     const res = await fetch(baseUrl + `/delete-job/${jobId}`, {
       method: "DELETE",
     });
@@ -15,7 +14,6 @@ export async function DeleteJob(jobId: string) {
       throw new Error(`Failed to connect to API`);
     }
     const data = await res.json();
-    console.log(`data: `, data);
     if (data.success) {
       return {
         success: true,

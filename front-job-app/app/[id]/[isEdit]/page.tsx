@@ -13,13 +13,13 @@ const baseUrl =
 export default function viewJob({
   params,
 }: {
-  params: Promise<{ id: string; isEditing: boolean }>;
+  params: Promise<{ id: string; isEdit: boolean }>;
 }) {
   // this has the job id, and isEdit inside to flag whether user is editing or not.
-  const parameters = React.use(params);
+  const parameters = React.use(params) || {};
   const [loading, setLoading] = useState(true);
   const [errMessage, setErrMessage] = useState("");
-  const [updatedInfo, setUpdatedInfo] = useState(false);
+  const [updateJob, setUpdateJob] = useState(false);
   const [job, setJob] = useState<JobInformationModel>({
     _id: "",
     company: "",
@@ -33,7 +33,6 @@ export default function viewJob({
   async function fetchJob() {
     try {
       setLoading(true);
-      console.log(`i am doing the fetch`);
       const res = await fetch(baseUrl + `/job-info/${parameters.id}`, {
         method: "GET",
       });
@@ -41,19 +40,32 @@ export default function viewJob({
         throw new Error("Unable to communicate with API");
       }
       const data = await res.json();
-      console.log(`am i receiving the data?: `, data);
+      setJob({ ...job, ...data.jobData });
     } catch (err: any) {
       setErrMessage(`unable to fetch job data: ` + err);
     } finally {
       setLoading(false);
     }
   }
-
   useEffect(() => {
-    console.log(`should fetch on load?`);
     fetchJob();
   }, []);
+  console.log("job: ", job);
+  // mini component to return which component to display depending on if the user is editing or not.
+  function JobInfoLayout() {
+    if (parameters.isEdit) return <EditPage job={job} />;
+    return <ViewingPage job={job} />;
+  }
 
-  if (parameters.isEditing) return <EditPage job={job} />;
-  return <ViewingPage job={job} />;
+  // initial laoding page state
+  if (loading && !job.company) return <p className="p-4">Loading...</p>;
+
+  return (
+    <div className="p-4">
+      <h1>
+        {parameters.isEdit ? `Editing ` : "Viewing "} {job.company} Opportunity
+      </h1>
+      <JobInfoLayout />
+    </div>
+  );
 }
