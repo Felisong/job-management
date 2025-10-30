@@ -5,9 +5,11 @@ import { useState } from "react";
 export default function TextAreaComponent({
   label,
   value,
+  onChange,
 }: {
   label: string;
   value?: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
   const [touched, setTouched] = useState<boolean>(false);
@@ -36,6 +38,7 @@ export default function TextAreaComponent({
         className={`bg-white text-black p-4 rounded ${
           showAll ? "h-fit" : "h-full"
         }`}
+        onChange={onChange}
       />
       <button
         className="w-full text-end"

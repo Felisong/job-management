@@ -5,9 +5,11 @@ import { useState } from "react";
 export default function TextInputComponent({
   label,
   value,
+  onChange,
 }: {
   label: string;
   value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
   const [touched, setTouched] = useState(false);
@@ -32,7 +34,7 @@ export default function TextInputComponent({
         type="text"
         name={partnerName}
         className="bg-white h-full text-black p-4 rounded"
-        value={value}
+        onChange={onChange}
       />
     </div>
   );
