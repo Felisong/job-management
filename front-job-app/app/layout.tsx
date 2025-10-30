@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Julius_Sans_One, Jura } from "next/font/google";
+import { Arimo, Jura } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-const juliusSansOne = Julius_Sans_One({
+const arimo = Arimo({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-julius",
@@ -27,9 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body
-        className={`${juliusSansOne.variable} ${jura.variable} antialiased h-full`}
-      >
+      <body className={`${arimo.variable} ${jura.variable} antialiased h-full`}>
         <Header />
         {children}
         <Footer />

@@ -18,7 +18,7 @@ export default function TextInputComponent({
       <label
         htmlFor={partnerName}
         className={`transition-all ease-in-out duration-150 absolute ${
-          !touched
+          !touched && value === ""
             ? ` text-gray-700 inset-y-0 left-2 flex items-center`
             : `text-white bottom-[110%]`
         }`}
@@ -32,6 +32,7 @@ export default function TextInputComponent({
         type="text"
         name={partnerName}
         className="bg-white h-full text-black p-4 rounded"
+        value={value}
       />
     </div>
   );
