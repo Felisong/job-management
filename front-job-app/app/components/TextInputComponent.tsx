@@ -25,7 +25,7 @@ export default function TextInputComponent({
             : `text-white bottom-[110%]`
         }`}
       >
-        {!touched ? label + "..." : label}
+        {!touched && value === "" ? label + "..." : label}
       </label>
       <input
         onFocus={() => {
@@ -35,6 +35,7 @@ export default function TextInputComponent({
         name={partnerName}
         className="bg-white h-full text-black p-4 rounded"
         onChange={onChange}
+        value={value}
       />
     </div>
   );

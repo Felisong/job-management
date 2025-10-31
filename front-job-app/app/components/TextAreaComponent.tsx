@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function TextAreaComponent({
   label,
@@ -11,11 +11,18 @@ export default function TextAreaComponent({
   value?: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
   const [touched, setTouched] = useState<boolean>(false);
   const [showAll, setShowAll] = useState<boolean>(false);
 
-  // add value to be prepopulated here.
+  // whenever value and show all change, change the height of the input
+  useEffect(() => {
+    if (textAreaRef.current && showAll) {
+      textAreaRef.current.style.height =
+        textAreaRef.current.scrollHeight + "px";
+    }
+  }, [value, showAll]);
   return (
     <div
       className={`flex flex-col relative mt-8 ${showAll ? "h-fit" : "h-40"}`}
@@ -23,26 +30,27 @@ export default function TextAreaComponent({
       <label
         htmlFor={partnerName}
         className={`transition-all ease-in-out duration-150 absolute ${
-          !touched
+          !touched && value === ""
             ? ` text-gray-700 inset-y-0 left-2 top-[10px]`
-            : `text-white bottom-[103%]`
+            : `text-white top-[-23px]`
         }`}
       >
-        {!touched ? label + "..." : label}
+        {!touched && value === "" ? label + "..." : label}
       </label>
       <textarea
+        ref={textAreaRef}
         onFocus={() => {
           setTouched(true);
         }}
         name={partnerName}
-        className={`bg-white text-black p-4 rounded ${
-          showAll ? "h-fit" : "h-full"
-        }`}
+        className={`bg-white text-black p-4 rounded ${!showAll && "h-full"}`}
         onChange={onChange}
+        value={value}
       />
       <button
         className="w-full text-end"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
           setShowAll((prev) => !prev);
         }}
       >
