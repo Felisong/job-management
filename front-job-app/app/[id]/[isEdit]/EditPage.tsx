@@ -55,9 +55,6 @@ export default function EditPage({ job }: { job: JobInformationModel }) {
       <button className="text-xl text-white py-4 self-start mt-8">
         Update
       </button>
-      <button className=" text-white self-start">
-        Click here to View Only
-      </button>
     </form>
   );
 }

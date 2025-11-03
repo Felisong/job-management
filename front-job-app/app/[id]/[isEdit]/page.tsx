@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import EditPage from "./EditPage";
 import ViewingPage from "./ViewingPage";
 import FetchJob from "@/app/actions/FetchJob";
+import { useRouter } from "next/navigation";
 
 const baseUrl =
   process.env.NODE_ENV === "development"
@@ -14,9 +15,10 @@ const baseUrl =
 export default function viewJob({
   params,
 }: {
-  params: Promise<{ id: string; isEdit: boolean }>;
+  params: Promise<{ id: string; isEdit: string }>;
 }) {
   // this has the job id, and isEdit inside to flag whether user is editing or not.
+  const router = useRouter();
   const parameters = React.use(params) || {};
   const [loading, setLoading] = useState(true);
   const [errMessage, setErrMessage] = useState("");
@@ -40,8 +42,6 @@ export default function viewJob({
       } else {
         throw new Error("Unable to fetch job data");
       }
-
-      console.log(`res?: `, res);
     } catch (err: any) {
       setErrMessage(`Failed to get job information`);
     } finally {
@@ -59,7 +59,7 @@ export default function viewJob({
 
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {
-    if (parameters.isEdit) return <EditPage job={job} />;
+    if (parameters.isEdit === "true") return <EditPage job={job} />;
     return <ViewingPage job={job} />;
   }
 
@@ -69,8 +69,19 @@ export default function viewJob({
   return (
     <div className="p-4 h-fit py-4">
       <h1>
-        {parameters.isEdit ? `Editing ` : "Viewing "} {job.company} Opportunity
+        {parameters.isEdit === "true" ? `Editing ` : "Viewing "} {job.company}{" "}
+        Opportunity
       </h1>
+      <button
+        className=" text-white self-start"
+        onClick={() => {
+          router.push(`/${parameters.id}/${!parameters.isEdit}`);
+        }}
+      >
+        {parameters.isEdit === "true"
+          ? "Click here to View Only"
+          : "Click here to Edit"}
+      </button>
       <JobInfoLayout />
     </div>
   );
