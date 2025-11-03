@@ -4,10 +4,7 @@ import type { JobInformationModel } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import JobDisplayList from "./components/JobDisplayList";
 import SearchAndFilters from "./components/SearchAndFilters";
-const baseUrl =
-  process.env.NODE_ENV === "development"
-    ? process.env.NEXT_PUBLIC_API_URL
-    : process.env.NEXT_PUBLIC_API_URL_PROD;
+import FetchAllJobs from "./actions/FetchAllJobs";
 
 export default function Home() {
   const observerRef = useRef<HTMLDivElement>(null);
@@ -21,25 +18,15 @@ export default function Home() {
   async function fetchJobs() {
     try {
       setLoading(true);
-      const url = lastJobId
-        ? `${baseUrl}/jobs?lastJobId=${lastJobId}`
-        : `${baseUrl}/jobs`;
-      const res = await fetch(url);
-      if (!res.ok) {
-        throw new Error(`Unable to fetch from API`);
-      }
-      const data = await res.json();
+      const data = await FetchAllJobs(lastJobId);
       setJobs((jobs) => [...jobs, ...data.jobs]);
       setHasMoreJobs(data.nextExpectedId ? true : false);
       setLastJobId(data.nextExpectedId?.toString());
       setInitialized(true);
     } catch (err: any) {
       console.error(`error fetching jobs: `, err);
-      if (err.startsWith("TypeError: Failed to fetch")) {
-        setErrMessage("Failed to communicate with API");
-      } else {
-        setErrMessage(`Failed fetching data: ` + err);
-      }
+
+      setErrMessage(`Failed fetching data: ` + err);
     } finally {
       setLoading(false);
     }

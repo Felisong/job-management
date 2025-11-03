@@ -40,11 +40,13 @@ router.get("/jobs", async (req, res) => {
 
 router.get("/job-info/:id", async (req, res) => {
   const jobId = req.params.id || "";
-
+  console.log(`==== JOB INFO ===== `);
+  console.log(`job id: `, jobId);
   try {
     if (!jobId) throw new Error("Not a valid job ID");
 
     const jobData = await JobInfo.findById(jobId);
+    console.log(`job data IN ROUTES: `, jobData);
     if (!jobData.company) {
       throw new Error("Failed to fetch job but communicated with API");
     }

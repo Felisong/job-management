@@ -4,6 +4,7 @@ import { JobInformationModel } from "@/types";
 import React, { useEffect, useState } from "react";
 import EditPage from "./EditPage";
 import ViewingPage from "./ViewingPage";
+import FetchJob from "@/app/actions/FetchJob";
 
 const baseUrl =
   process.env.NODE_ENV === "development"
@@ -33,24 +34,30 @@ export default function viewJob({
   async function fetchJob() {
     try {
       setLoading(true);
-      const res = await fetch(baseUrl + `/job-info/${parameters.id}`, {
-        method: "GET",
-      });
-      if (!res.ok) {
-        throw new Error("Unable to communicate with API");
+      console.log(`i am fetching the job now!`);
+      const res = await FetchJob(parameters.id);
+      if (res.success) {
+        setJob({ ...job, ...res.jobData });
+      } else {
+        throw new Error("Unable to fetch job data");
       }
-      const data = await res.json();
-      setJob({ ...job, ...data.jobData });
+
+      console.log(`res?: `, res);
     } catch (err: any) {
-      setErrMessage(`unable to fetch job data: ` + err);
+      setErrMessage(`Failed to get job information`);
     } finally {
       setLoading(false);
     }
   }
+
   useEffect(() => {
-    fetchJob();
-  }, []);
-  console.log("job: ", job);
+    if (parameters.id) {
+      fetchJob();
+    } else {
+      console.log(`no id?: `, parameters.id);
+    }
+  }, [parameters.id]);
+  // console.log("job: ", job);
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {
     if (parameters.isEdit) return <EditPage job={job} />;

@@ -15,6 +15,9 @@ export default function EditPage({ job }: { job: JobInformationModel }) {
       }));
     };
   }
+  // i have all the values here now!
+
+  function handleUpdateJobInfo() {}
 
   return (
     <form action="POST">
