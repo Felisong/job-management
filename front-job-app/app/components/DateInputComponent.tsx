@@ -14,10 +14,9 @@ export default function DateInputComponent({
   const date = value.split("T")[0];
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
   const [touched, setTouched] = useState(false);
-  console.log(`date: `, date);
   // add value to be prepopulated here.
   return (
-    <div className="flex flex-col relative h-10 mt-8">
+    <div className="flex flex-col relative h-10">
       <label htmlFor={partnerName}>{label}</label>
       <input
         onFocus={() => {

@@ -34,7 +34,6 @@ export default function viewJob({
   async function fetchJob() {
     try {
       setLoading(true);
-      console.log(`i am fetching the job now!`);
       const res = await FetchJob(parameters.id);
       if (res.success) {
         setJob({ ...job, ...res.jobData });
@@ -57,7 +56,7 @@ export default function viewJob({
       console.log(`no id?: `, parameters.id);
     }
   }, [parameters.id]);
-  // console.log("job: ", job);
+
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {
     if (parameters.isEdit) return <EditPage job={job} />;
@@ -68,7 +67,7 @@ export default function viewJob({
   if (loading && !job.company) return <p className="p-4">Loading...</p>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-fit py-4">
       <h1>
         {parameters.isEdit ? `Editing ` : "Viewing "} {job.company} Opportunity
       </h1>
