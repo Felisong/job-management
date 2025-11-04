@@ -46,3 +46,6 @@ button:active {
 h1 {
   font-size: clamp(1.5em, 2.3em, 3em);
 }
+h2 {
+  font-size: clamp(1.3em, 1.5em, 2em);
+}
