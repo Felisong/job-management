@@ -6,7 +6,6 @@ export default function ViewingPage({ job }: { job: JobInformationModel }) {
   function attributeExists(field: keyof JobInformationModel) {
     return job[field] !== "";
   }
-  console.log(`job desc: `, job.job_description);
   return (
     <div className="box-border my-10">
       <h2>Job Title</h2>

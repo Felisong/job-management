@@ -14,7 +14,6 @@ export default async function FetchAllJobs(lastJobId: string) {
       throw new Error(`Unable to fetch from API`);
     }
     const data = await res.json();
-    console.log(`what does data look like?: `, data);
     return {
       success: true,
       message: "got all jobs",

@@ -7,11 +7,6 @@ import ViewingPage from "./ViewingPage";
 import FetchJob from "@/app/actions/FetchJob";
 import { useRouter } from "next/navigation";
 
-const baseUrl =
-  process.env.NODE_ENV === "development"
-    ? process.env.NEXT_PUBLIC_API_URL
-    : process.env.NEXT_PUBLIC_API_URL_PROD;
-
 export default function viewJob({
   params,
 }: {
@@ -56,6 +51,7 @@ export default function viewJob({
       console.log(`no id?: `, parameters.id);
     }
   }, [parameters.id]);
+  console.log(`is Edit? `, parameters.isEdit);
 
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {
@@ -75,7 +71,8 @@ export default function viewJob({
       <button
         className=" text-white self-start"
         onClick={() => {
-          router.push(`/${parameters.id}/${!parameters.isEdit}`);
+          const newValue = parameters.isEdit === "true" ? false : true;
+          router.push(`/${parameters.id}/${newValue}`);
         }}
       >
         {parameters.isEdit === "true"
