@@ -8,6 +8,7 @@ import FetchAllJobs from "./actions/FetchAllJobs";
 
 export default function Home() {
   const observerRef = useRef<HTMLDivElement>(null);
+  const hasFetchedRef = useRef(false);
   const [lastJobId, setLastJobId] = useState<string>("");
   const [jobs, setJobs] = useState<JobInformationModel[]>([]);
   const [hasMoreJobs, setHasMoreJobs] = useState<boolean>(true);
@@ -32,7 +33,10 @@ export default function Home() {
     }
   }
   useEffect(() => {
-    fetchJobs();
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchJobs();
+    }
   }, []);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -48,14 +52,10 @@ export default function Home() {
     // clean up the observer on unmount!
     return () => {
       if (observerRef.current) {
-        setJobs([]);
-        setHasMoreJobs(true);
-        setInitialized(false);
-        setLastJobId("");
         observer.unobserve(observerRef.current);
       }
     };
-  }, [hasMoreJobs, loading]);
+  }, [hasMoreJobs, loading, initialized]);
 
   return (
     <div className="p-4">

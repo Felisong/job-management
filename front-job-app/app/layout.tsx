@@ -3,6 +3,8 @@ import { Arimo, Jura } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { ModalProvider } from "./utils/context/AddModalContext";
+import CreateJobModal from "./components/CreateJobModal";
 
 const arimo = Arimo({
   weight: "400",
@@ -27,10 +29,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${arimo.variable} ${jura.variable} antialiased h-full`}>
+      <body
+        className={`${arimo.variable} ${jura.variable} antialiased h-full relative`}
+      >
+        {/* <ModalProvider> */}
         <Header />
+        <CreateJobModal />
         {children}
         <Footer />
+        {/* </ModalProvider> */}
       </body>
     </html>
   );

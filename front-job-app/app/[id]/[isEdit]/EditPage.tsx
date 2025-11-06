@@ -6,7 +6,6 @@ import DateInputComponent from "@/app/components/DateInputComponent";
 import { useState } from "react";
 import DropDownInput from "@/app/components/DropDownInput";
 import EditJob from "@/app/actions/EditJob";
-import { useRouter } from "next/navigation";
 
 export default function EditPage({
   job,
@@ -16,7 +15,6 @@ export default function EditPage({
   updateJobData: () => void;
 }) {
   const [jobInfo, setJobInfo] = useState(job);
-  const route = useRouter();
   function handleTextChange(field: keyof JobInformationModel) {
     return (
       e: React.ChangeEvent<

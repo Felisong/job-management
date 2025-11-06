@@ -50,3 +50,9 @@ h2 {
   font-size: clamp(1.3em, 1.5em, 2em);
   padding-top: 1em;
 }
+
+.glassmorphism {
+  position: absolute;
+  z-index: 2;
+  background-color: #2f1e00;
+}

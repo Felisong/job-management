@@ -1,0 +1,84 @@
+"use client";
+
+import { JobInformationModel } from "@/types";
+import { useState } from "react";
+import TextInputComponent from "./TextInputComponent";
+import DropDownInput from "./DropDownInput";
+import TextAreaComponent from "./TextAreaComponent";
+import DateInputComponent from "./DateInputComponent";
+import { useModal } from "../utils/context/AddModalContext";
+
+export default function CreateJobModal() {
+  // const { isOpen, closeModal } = useModal();
+  // if (!isOpen) return <></>;
+
+  const [jobInfo, setJobInfo] = useState<JobInformationModel>({
+    _id: "",
+    company: "",
+    job_title: "",
+    date_sent: "",
+    state: "",
+    job_description: "",
+    other: "",
+  });
+  // text state management
+  function handleTextChange(field: keyof JobInformationModel) {
+    return (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
+      setJobInfo((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
+  }
+  return <></>;
+  // return (
+  //   <div className="glassmorphism fixed inset-0 flex justify-center">
+  //     <div>
+  //       <h2>Create New Entry</h2>
+  //       {/* <button onClick={closeModal}>X</button> */}
+  //     </div>
+  //     <form action="POST" className="box-border h-fit flex flex-col">
+  //       <TextInputComponent
+  //         label="Company Name"
+  //         value={jobInfo.company}
+  //         onChange={handleTextChange("company")}
+  //       />
+  //       <TextInputComponent
+  //         label="Job Title"
+  //         value={jobInfo.job_title}
+  //         onChange={handleTextChange("job_title")}
+  //       />
+  //       <DropDownInput onChange={handleTextChange("state")} />
+  //       <TextInputComponent
+  //         label="Job Description"
+  //         value={jobInfo.job_description ? jobInfo.job_description : ""}
+  //         onChange={handleTextChange("job_description")}
+  //       />
+  //       <TextAreaComponent
+  //         label="Other Information"
+  //         value={jobInfo.other ? jobInfo.other : ""}
+  //         onChange={handleTextChange("other")}
+  //       />
+  //       <DateInputComponent
+  //         label="Application Date"
+  //         value={jobInfo.date_sent ? jobInfo.date_sent : ""}
+  //         onChange={handleTextChange("date_sent")}
+  //       />
+  //       <button
+  //         className="text-xl text-white py-4 self-start mt-8"
+  //         onClick={(e) => {
+  //           e.preventDefault();
+
+  //           //handle add new Job
+  //         }}
+  //       >
+  //         Add Job
+  //       </button>
+  //     </form>
+  //   </div>
+  // );
+}
