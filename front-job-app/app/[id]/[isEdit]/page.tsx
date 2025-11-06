@@ -6,6 +6,7 @@ import EditPage from "./EditPage";
 import ViewingPage from "./ViewingPage";
 import FetchJob from "@/app/actions/FetchJob";
 import { useRouter } from "next/navigation";
+import Spinner from "@/app/components/utils/Spinner";
 
 export default function viewJob({
   params,
@@ -13,11 +14,11 @@ export default function viewJob({
   params: Promise<{ id: string; isEdit: string }>;
 }) {
   // this has the job id, and isEdit inside to flag whether user is editing or not.
-  const router = useRouter();
+  const route = useRouter();
   const parameters = React.use(params) || {};
-  const [loading, setLoading] = useState(true);
-  const [errMessage, setErrMessage] = useState("");
-  const [updateJob, setUpdateJob] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [redirectClicked, setRedirectClicked] = useState<boolean>(false);
+  const [errMessage, setErrMessage] = useState<string>("");
   const [job, setJob] = useState<JobInformationModel>({
     _id: "",
     company: "",
@@ -44,6 +45,12 @@ export default function viewJob({
     }
   }
 
+  // refetch after the update is sent
+  async function updateJobData() {
+    fetchJob();
+    route.push(`/${job._id}/false`);
+  }
+
   useEffect(() => {
     if (parameters.id) {
       fetchJob();
@@ -51,11 +58,11 @@ export default function viewJob({
       console.log(`no id?: `, parameters.id);
     }
   }, [parameters.id]);
-  console.log(`is Edit? `, parameters.isEdit);
 
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {
-    if (parameters.isEdit === "true") return <EditPage job={job} />;
+    if (parameters.isEdit === "true")
+      return <EditPage updateJobData={updateJobData} job={job} />;
     return <ViewingPage job={job} />;
   }
 
@@ -68,17 +75,22 @@ export default function viewJob({
         {parameters.isEdit === "true" ? `Editing ` : "Viewing "} {job.company}{" "}
         Opportunity
       </h1>
-      <button
-        className=" text-white self-start"
-        onClick={() => {
-          const newValue = parameters.isEdit === "true" ? false : true;
-          router.push(`/${parameters.id}/${newValue}`);
-        }}
-      >
-        {parameters.isEdit === "true"
-          ? "Click here to View Only"
-          : "Click here to Edit"}
-      </button>
+      {redirectClicked ? (
+        <Spinner />
+      ) : (
+        <button
+          className=" text-white self-start"
+          onClick={() => {
+            setRedirectClicked(true);
+            const newValue = parameters.isEdit === "true" ? false : true;
+            route.push(`/${parameters.id}/${newValue}`);
+          }}
+        >
+          {parameters.isEdit === "true"
+            ? "Click here to View Only"
+            : "Click here to Edit"}
+        </button>
+      )}
       <JobInfoLayout />
     </div>
   );

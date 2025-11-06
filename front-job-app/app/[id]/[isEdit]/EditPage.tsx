@@ -5,9 +5,18 @@ import TextAreaComponent from "@/app/components/TextAreaComponent";
 import DateInputComponent from "@/app/components/DateInputComponent";
 import { useState } from "react";
 import DropDownInput from "@/app/components/DropDownInput";
+import EditJob from "@/app/actions/EditJob";
+import { useRouter } from "next/navigation";
 
-export default function EditPage({ job }: { job: JobInformationModel }) {
+export default function EditPage({
+  job,
+  updateJobData,
+}: {
+  job: JobInformationModel;
+  updateJobData: () => void;
+}) {
   const [jobInfo, setJobInfo] = useState(job);
+  const route = useRouter();
   function handleTextChange(field: keyof JobInformationModel) {
     return (
       e: React.ChangeEvent<
@@ -20,9 +29,19 @@ export default function EditPage({ job }: { job: JobInformationModel }) {
       }));
     };
   }
-  // i have all the values here now!
 
-  function handleUpdateJobInfo() {}
+  async function handleUpdateJobInfo() {
+    try {
+      const updateJob = await EditJob(jobInfo);
+      if (updateJob.success) {
+        updateJobData();
+      } else {
+        throw new Error(updateJob.message);
+      }
+    } catch (err: any) {
+      console.log(`handle edit err: `, err);
+    }
+  }
 
   return (
     <form action="POST" className="box-border h-fit py-8 mb-20 flex flex-col">
@@ -52,7 +71,13 @@ export default function EditPage({ job }: { job: JobInformationModel }) {
         value={jobInfo.date_sent ? jobInfo.date_sent : ""}
         onChange={handleTextChange("date_sent")}
       />
-      <button className="text-xl text-white py-4 self-start mt-8">
+      <button
+        className="text-xl text-white py-4 self-start mt-8"
+        onClick={(e) => {
+          e.preventDefault();
+          handleUpdateJobInfo();
+        }}
+      >
         Update
       </button>
     </form>

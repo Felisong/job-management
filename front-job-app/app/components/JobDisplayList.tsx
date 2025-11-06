@@ -12,7 +12,13 @@ export default function JobDisplayList({
 }) {
   const router = useRouter();
   // handles the array inside the component for ease of use
-  const [displayedJobs, setDisplayedJobs] = useState(jobs);
+  const [displayedJobs, setDisplayedJobs] =
+    useState<JobInformationModel[]>(jobs);
+
+  // redirect the user for view or edit page.
+  function handleRedirect(jobId: string, isEditing: boolean = false) {
+    router.push(`/${jobId}/${isEditing}`);
+  }
 
   // delete a job
   async function handleDeleteClick(jobId: string) {
@@ -24,10 +30,6 @@ export default function JobDisplayList({
       //show toast
       console.log(`failed to delete`);
     }
-  }
-
-  function handleRedirect(jobId: string, isEditing: boolean = false) {
-    router.push(`/${jobId}/${isEditing}`);
   }
 
   // keeps the array updated as jobs loads in more.

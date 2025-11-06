@@ -82,4 +82,21 @@ router.delete("/delete-job/:id", async (req, res) => {
   }
 });
 
+router.put("/update-job", async (req, res) => {
+  try {
+    const job = req.body;
+    if (!job._id) throw new Error("no valid job to update");
+
+    const updateJob = await JobInfo.updateOne({ _id: job._id }, job);
+    if (updateJob.matchedCount === 1) {
+      res.status(200).json({ success: true, message: `you did it` });
+    } else
+      throw new Error(
+        `unable to update the job, please contact me if this fails`
+      );
+  } catch (err) {
+    req.status(500).json({ success: false, message: "false" });
+  }
+});
+
 module.exports = router;
