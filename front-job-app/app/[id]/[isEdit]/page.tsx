@@ -7,6 +7,7 @@ import ViewingPage from "./ViewingPage";
 import FetchJob from "@/app/actions/FetchJob";
 import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/utils/Spinner";
+import { DeleteJob } from "@/app/actions/DeleteJob";
 
 export default function viewJob({
   params,
@@ -42,6 +43,20 @@ export default function viewJob({
       setErrMessage(`Failed to get job information`);
     } finally {
       setLoading(false);
+    }
+  }
+
+  // delete a job
+  async function handleDeleteClick(jobId: string) {
+    const req = await DeleteJob(jobId);
+    if (req.success) {
+      // show toast here
+      setTimeout(() => {
+        route.push("/");
+      }, 1500);
+    } else {
+      //show toast
+      console.log(`failed to delete`);
     }
   }
 
@@ -92,6 +107,15 @@ export default function viewJob({
         </button>
       )}
       <JobInfoLayout />
+      <button
+        className="py-4"
+        onClick={(e) => {
+          e.preventDefault();
+          handleDeleteClick(job._id);
+        }}
+      >
+        Delete This Job
+      </button>
     </div>
   );
 }

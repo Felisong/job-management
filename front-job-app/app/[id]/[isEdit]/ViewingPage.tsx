@@ -7,7 +7,7 @@ export default function ViewingPage({ job }: { job: JobInformationModel }) {
     return job[field] !== "";
   }
   return (
-    <div className="box-border my-10">
+    <div className="box-border mt-2 mb-10">
       <h2>Job Title</h2>
       <p>{job.job_title}</p>
       {attributeExists("state") && (
@@ -22,16 +22,16 @@ export default function ViewingPage({ job }: { job: JobInformationModel }) {
           <p>{job.date_sent?.substring(0, job.date_sent?.indexOf("T"))}</p>
         </>
       )}
+      {attributeExists("other") && (
+        <>
+          <h2>Job Notes</h2>
+          <p className="whitespace-pre-wrap">{job.other}</p>
+        </>
+      )}
       {attributeExists("job_description") && (
         <>
           <h2>Job Description</h2>
           <p className="whitespace-pre-wrap">{job.job_description}</p>
-        </>
-      )}
-      {attributeExists("other") && (
-        <>
-          <h2>Job Other</h2>
-          <p className="whitespace-pre-wrap">{job.other}</p>
         </>
       )}
     </div>
