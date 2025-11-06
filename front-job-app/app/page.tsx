@@ -48,6 +48,10 @@ export default function Home() {
     // clean up the observer on unmount!
     return () => {
       if (observerRef.current) {
+        setJobs([]);
+        setHasMoreJobs(true);
+        setInitialized(false);
+        setLastJobId("");
         observer.unobserve(observerRef.current);
       }
     };
