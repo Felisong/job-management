@@ -28,7 +28,6 @@ export function ModalProvider({ children }: { children: ReactNode }) {
 }
 
 // hook to use the modal context, i call this to have access to the values.
-
 export function useModal() {
   const context = useContext(ModalContext);
   if (!context) {

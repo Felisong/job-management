@@ -10,14 +10,13 @@ import { useModal } from "../utils/context/AddModalContext";
 
 export default function CreateJobModal() {
   const { isOpen, closeModal } = useModal();
-  if (!isOpen) return <></>;
 
   const [jobInfo, setJobInfo] = useState<JobInformationModel>({
     _id: "",
     company: "",
     job_title: "",
     date_sent: "",
-    state: "",
+    state: "awaiting_response",
     job_description: "",
     other: "",
   });
@@ -35,6 +34,7 @@ export default function CreateJobModal() {
     };
   }
 
+  if (!isOpen) return null;
   return (
     <div className="glassmorphism fixed inset-0 flex justify-center flex-col w-full items-center">
       <div className="w-5/6 bg-backdrop-primary rounded p-4">
@@ -55,8 +55,11 @@ export default function CreateJobModal() {
             value={jobInfo.job_title}
             onChange={handleTextChange("job_title")}
           />
-          <DropDownInput onChange={handleTextChange("state")} />
-          <TextInputComponent
+          <DropDownInput
+            value={jobInfo.state}
+            onChange={handleTextChange("state")}
+          />
+          <TextAreaComponent
             label="Job Description"
             value={jobInfo.job_description ? jobInfo.job_description : ""}
             onChange={handleTextChange("job_description")}
