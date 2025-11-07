@@ -38,8 +38,8 @@ button {
   font-family: var(--font-jura), sans-serif;
 }
 
-button:hover,
-button:active {
+button:not(:disabled):hover,
+button:not(:disabled):active {
   color: #d33e19;
 }
 

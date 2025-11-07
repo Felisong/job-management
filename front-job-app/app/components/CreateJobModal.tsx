@@ -7,10 +7,11 @@ import DropDownInput from "./DropDownInput";
 import TextAreaComponent from "./TextAreaComponent";
 import DateInputComponent from "./DateInputComponent";
 import { useModal } from "../utils/context/AddModalContext";
+import { isFieldEmpty, isRealDate } from "../utils/validation";
 
 export default function CreateJobModal() {
   const { isOpen, closeModal } = useModal();
-
+  const [formIsValid, setFormIsValid] = useState<boolean>(false);
   const [jobInfo, setJobInfo] = useState<JobInformationModel>({
     _id: "",
     company: "",
@@ -20,6 +21,7 @@ export default function CreateJobModal() {
     job_description: "",
     other: "",
   });
+
   // text state management
   function handleTextChange(field: keyof JobInformationModel) {
     return (
@@ -34,6 +36,7 @@ export default function CreateJobModal() {
     };
   }
 
+  // resets value when modal closes
   useEffect(() => {
     if (!isOpen) {
       setJobInfo({
@@ -47,6 +50,17 @@ export default function CreateJobModal() {
       });
     }
   }, [isOpen]);
+
+  // checks that the form is valid before allowing submission
+  useEffect(() => {
+    !isFieldEmpty(jobInfo.company, "company name") &&
+    !isFieldEmpty(jobInfo.job_title, "job title") &&
+    !isFieldEmpty(String(jobInfo.state), "job state") &&
+    !isFieldEmpty(String(jobInfo.job_description), "job description") &&
+    !isRealDate(String(jobInfo.date_sent))
+      ? setFormIsValid(true)
+      : setFormIsValid(false);
+  }, [jobInfo]);
 
   if (!isOpen) return null;
   return (
@@ -63,20 +77,27 @@ export default function CreateJobModal() {
             label="Company Name"
             value={jobInfo.company}
             onChange={handleTextChange("company")}
+            validation={isFieldEmpty(jobInfo.company, "company name")}
           />
           <TextInputComponent
             label="Job Title"
             value={jobInfo.job_title}
             onChange={handleTextChange("job_title")}
+            validation={isFieldEmpty(jobInfo.job_title, "job title")}
           />
           <DropDownInput
             value={jobInfo.state}
             onChange={handleTextChange("state")}
+            validation={isFieldEmpty(String(jobInfo.state), "job state")}
           />
           <TextAreaComponent
             label="Job Description"
             value={jobInfo.job_description ? jobInfo.job_description : ""}
             onChange={handleTextChange("job_description")}
+            validation={isFieldEmpty(
+              String(jobInfo.job_description),
+              "job description"
+            )}
           />
           <TextAreaComponent
             label="Other Information"
@@ -87,9 +108,11 @@ export default function CreateJobModal() {
             label="Application Date"
             value={jobInfo.date_sent ? jobInfo.date_sent : ""}
             onChange={handleTextChange("date_sent")}
+            validation={isRealDate(String(jobInfo.date_sent))}
           />
           <button
-            className="text-xl text-white py-4 self-start mt-8"
+            className="text-xl text-white py-4 self-start mt-8 disabled:text-gray-400 disabled:cursor-not-allowed "
+            disabled={!formIsValid}
             onClick={(e) => {
               e.preventDefault();
 
