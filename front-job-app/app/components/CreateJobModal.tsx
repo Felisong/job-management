@@ -1,7 +1,7 @@
 "use client";
 
 import { JobInformationModel } from "@/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextInputComponent from "./TextInputComponent";
 import DropDownInput from "./DropDownInput";
 import TextAreaComponent from "./TextAreaComponent";
@@ -33,6 +33,20 @@ export default function CreateJobModal() {
       }));
     };
   }
+
+  useEffect(() => {
+    if (!isOpen) {
+      setJobInfo({
+        _id: "",
+        company: "",
+        job_title: "",
+        date_sent: "",
+        state: "awaiting_response",
+        job_description: "",
+        other: "",
+      });
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
   return (

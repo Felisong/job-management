@@ -23,6 +23,7 @@ export default function TextAreaComponent({
         textAreaRef.current.scrollHeight + "px";
     }
   }, [value, showAll]);
+
   return (
     <div
       className={`flex flex-col relative mt-8 ${showAll ? "h-fit" : "h-40"}`}

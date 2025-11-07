@@ -3,7 +3,7 @@ import TextInputComponent from "@/app/components/TextInputComponent";
 import { JobInformationModel } from "../../../types";
 import TextAreaComponent from "@/app/components/TextAreaComponent";
 import DateInputComponent from "@/app/components/DateInputComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropDownInput from "@/app/components/DropDownInput";
 import EditJob from "@/app/actions/EditJob";
 
@@ -40,6 +40,13 @@ export default function EditPage({
       console.log(`handle edit err: `, err);
     }
   }
+
+  // reset job info if no update
+  useEffect(() => {
+    return () => {
+      setJobInfo(job);
+    };
+  }, []);
 
   return (
     <form action="POST" className="box-border h-fit py-8 mb-20 flex flex-col">

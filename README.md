@@ -12,7 +12,15 @@ MongoDB for ease of use I feel very comfy with PSQL
 
 and docker to run these all from.
 
-## Used
+## Technologies
 
+- [React](https://nextjs.org)
+- [Tailwind](https://tailwindcss.com)
+- [Node](https://nodejs.org/en)
 - [ExpressJS](https://expressjs.com)
+
+## Resources
+
+- [w3Schools](https://www.w3schools.com)
+- [Stack Overflow](https://stackoverflow.com/)
 - [Claude](https://claude.ai/new)
