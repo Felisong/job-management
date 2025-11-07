@@ -32,12 +32,12 @@ export default function RootLayout({
       <body
         className={`${arimo.variable} ${jura.variable} antialiased h-full relative`}
       >
-        {/* <ModalProvider> */}
-        <Header />
-        <CreateJobModal />
-        {children}
-        <Footer />
-        {/* </ModalProvider> */}
+        <ModalProvider>
+          <Header />
+          <CreateJobModal />
+          {children}
+          <Footer />
+        </ModalProvider>
       </body>
     </html>
   );

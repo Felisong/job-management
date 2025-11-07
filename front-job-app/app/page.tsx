@@ -1,12 +1,14 @@
 "use client";
 
 import type { JobInformationModel } from "@/types";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import JobDisplayList from "./components/JobDisplayList";
 import SearchAndFilters from "./components/SearchAndFilters";
 import FetchAllJobs from "./actions/FetchAllJobs";
+import { useModal } from "./utils/context/AddModalContext";
 
 export default function Home() {
+  const { openModal } = useModal();
   const observerRef = useRef<HTMLDivElement>(null);
   const hasFetchedRef = useRef(false);
   const [lastJobId, setLastJobId] = useState<string>("");
@@ -60,7 +62,9 @@ export default function Home() {
   return (
     <div className="p-4">
       <SearchAndFilters />
-      <button className="mb-4 text-2xl">Add new Job</button>
+      <button className="mb-4 text-2xl" onClick={openModal}>
+        Add new Job
+      </button>
       {jobs.length > 0 && (
         <div className="bg-secondary-backdrop">
           <JobDisplayList jobs={jobs}></JobDisplayList>
