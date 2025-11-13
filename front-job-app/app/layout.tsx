@@ -5,6 +5,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ModalProvider } from "./utils/context/AddModalContext";
 import CreateJobModal from "./components/CreateJobModal";
+import { ShowToastProvider } from "./utils/context/ShowToastContext";
+import ToastComponent from "./components/ToastComponent";
 
 const arimo = Arimo({
   weight: "400",
@@ -34,8 +36,12 @@ export default function RootLayout({
       >
         <ModalProvider>
           <Header />
-          <CreateJobModal />
-          {children}
+          <ShowToastProvider>
+            <ToastComponent />
+            <CreateJobModal />
+
+            {children}
+          </ShowToastProvider>
           <Footer />
         </ModalProvider>
       </body>

@@ -8,8 +8,11 @@ import TextAreaComponent from "./TextAreaComponent";
 import DateInputComponent from "./DateInputComponent";
 import { useModal } from "../utils/context/AddModalContext";
 import { isFieldEmpty, isRealDate } from "../utils/validation";
+import { CreateJob } from "../actions/CreateJob";
+import { useToast } from "../utils/context/ShowToastContext";
 
 export default function CreateJobModal() {
+  const toast = useToast();
   const { isOpen, closeModal } = useModal();
   const [formIsValid, setFormIsValid] = useState<boolean>(false);
   const [jobInfo, setJobInfo] = useState<JobInformationModel>({
@@ -34,6 +37,44 @@ export default function CreateJobModal() {
         [field]: e.target.value,
       }));
     };
+  }
+  async function handleCreateJob() {
+    try {
+      const result = await CreateJob(jobInfo);
+      if (result.success) {
+        toast.triggerToast({
+          message: result.message,
+          isError: false,
+          showToast: true,
+        });
+        setJobInfo({
+          _id: "",
+          company: "",
+          job_title: "",
+          date_sent: "",
+          state: "awaiting_response",
+          job_description: "",
+          other: "",
+        });
+        closeModal();
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (err: any) {
+      if (String(err).startsWith("Failed to fetch")) {
+        toast.triggerToast({
+          message: `Failed to communicate with API, please ereach out to carolinahs100@gmail.com`,
+          isError: false,
+          showToast: true,
+        });
+      } else {
+        toast.triggerToast({
+          message: `Failed to create new job. Please try again later.`,
+          isError: true,
+          showToast: true,
+        });
+      }
+    }
   }
 
   // resets value when modal closes
@@ -64,7 +105,7 @@ export default function CreateJobModal() {
 
   if (!isOpen) return null;
   return (
-    <div className="glassmorphism fixed inset-0 flex justify-center flex-col w-full items-center">
+    <div className="glassmorphism fixed inset-0 flex justify-center flex-col w-full items-center ">
       <div className="w-5/6 bg-backdrop-primary rounded p-4">
         <div className="flex justify-between items-center">
           <h2>Create New Entry</h2>
@@ -115,8 +156,7 @@ export default function CreateJobModal() {
             disabled={!formIsValid}
             onClick={(e) => {
               e.preventDefault();
-
-              //handle add new Job
+              handleCreateJob();
             }}
           >
             Add Job

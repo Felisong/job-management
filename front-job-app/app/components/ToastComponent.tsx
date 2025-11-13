@@ -6,7 +6,7 @@ export default function ToastComponent() {
   const { toastData } = useToast();
 
   return (
-    <div className="fixed inset-0 w-full flex justify-center">
+    <div className="fixed inset-0 w-full flex justify-center pointer-events-none">
       <div
         className={`glassmorphism w-5/6 transition ease-in-out duration-150 ${
           toastData.showToast ? "opacity-100" : "opacity-0"

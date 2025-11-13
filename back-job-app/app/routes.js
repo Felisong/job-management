@@ -2,12 +2,30 @@ const express = require("express");
 const router = express.Router();
 const JobInfo = require("./models/JobInformationModel");
 const mongoose = require("mongoose");
-const { ObjectId } = mongoose.Types;
 
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
 });
 
+// all job related API's
+router.post("/create-job", async (req, res) => {
+  try {
+    const { _id, ...body } = req.body;
+    const create = await JobInfo.insertOne(body);
+
+    if (create._id) {
+      res
+        .status(200)
+        .json({ success: true, message: "Successfully created new job." });
+    } else {
+      throw new Error(`Communicated with server but failed to create entry`);
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error in create-job: " + err });
+  }
+});
 router.get("/jobs", async (req, res) => {
   try {
     // I'll have to change this later to take in a user id if I want to add that functionality.
