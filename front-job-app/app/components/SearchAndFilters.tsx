@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react";
+import { QueryJobs } from "../actions/QueryJobs";
 
 export default function SearchAndFilters() {
   const [query, setQuery] = useState<string>("");
@@ -9,14 +10,21 @@ export default function SearchAndFilters() {
   }
 
   // function fetching data that matches the query
-  async function handleQuerySearch(){
+  async function handleQuerySearch(e : React.MouseEvent<HTMLButtonElement>){
+    e.preventDefault();
+    try {
+      const queryResult = await QueryJobs(query);
+      console.log(`result: `, queryResult)
 
+    } catch (err: unknown){
+      console.log(`woops :]` + err)
+    }
   }
  
   return (
     <div className="grid grid-cols-[75%_1fr] py-3 items-center text-center">
       <form action="POST" className="bg-white h-10 rounded-xl relative">
-        <button className="absolute text-black inset-y-0 right-2 flex items-center" >
+        <button className="absolute text-black inset-y-0 right-2 flex items-center" onClick={handleQuerySearch}>
           <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"

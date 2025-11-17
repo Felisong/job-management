@@ -27,7 +27,6 @@ router.post("/create-job", async (req, res) => {
   }
 });
 router.get("/jobs", async (req, res) => {
-  console.log(`jobs is GETTING PINGED`)
   try {
     // I'll have to change this later to take in a user id if I want to add that functionality.
     const limit = 25;
@@ -41,7 +40,6 @@ router.get("/jobs", async (req, res) => {
       .select(`-job_description -other`)
       .sort({ _id: -1 })
       .limit(limit);
-    console.log(`jobs: `, jobs)
 
     const hasMore = jobs.length === limit;
     const nextJobId = hasMore ? jobs[jobs.length - 1]._id : null;
@@ -118,5 +116,18 @@ router.put("/update-job", async (req, res) => {
     req.status(500).json({ success: false, message: "false" });
   }
 });
+
+router.get("/query-jobs/:query", async (req, res) => {
+  console.log(`PING`)
+  try {
+    const query = req.params.query;
+    console.log(`backend receives query: `, query)
+
+    
+  } catch (err) {
+    console.error(`error in querying jobs: `, err);
+    res.status(500).json({success: false, message: "failed to get jobs matching the query"})
+  }
+})
 
 module.exports = router;
