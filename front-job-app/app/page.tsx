@@ -1,7 +1,7 @@
 "use client";
 
 import type { JobInformationModel } from "@/types";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import JobDisplayList from "./components/JobDisplayList";
 import SearchAndFilters from "./components/SearchAndFilters";
 import FetchAllJobs from "./actions/FetchAllJobs";
@@ -22,11 +22,11 @@ export default function Home() {
     try {
       setLoading(true);
       const data = await FetchAllJobs(lastJobId);
-      setJobs((jobs) => [...jobs, ...data.jobs]);
+      setJobs((jobs : JobInformationModel[]) => [...jobs, ...data.jobs]);
       setHasMoreJobs(data.nextExpectedId ? true : false);
       setLastJobId(data.nextExpectedId?.toString());
       setInitialized(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`error fetching jobs: `, err);
 
       setErrMessage(`Failed fetching data: ` + err);

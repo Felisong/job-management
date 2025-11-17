@@ -1,4 +1,7 @@
 "use server";
+
+import { JobInformationModel } from "@/types";
+
 const baseUrl =
   process.env.NODE_ENV === "development"
     ? process.env.NEXT_PUBLIC_API_URL
@@ -6,6 +9,8 @@ const baseUrl =
 
 export default async function FetchAllJobs(lastJobId: string) {
   try {
+    console.log(`baseUrl: `, baseUrl)
+    let jobsList : JobInformationModel[] = [];
     const url = lastJobId
       ? `${baseUrl}/jobs?lastJobId=${lastJobId}`
       : `${baseUrl}/jobs`;
@@ -14,10 +19,11 @@ export default async function FetchAllJobs(lastJobId: string) {
       throw new Error(`Unable to fetch from API`);
     }
     const data = await res.json();
+    jobsList = data.jobs || [];
     return {
       success: true,
       message: "got all jobs",
-      jobs: data.jobs,
+      jobs: jobsList,
       nextExpectedId: data.nextExpectedId,
     };
   } catch (err: any) {
@@ -25,6 +31,7 @@ export default async function FetchAllJobs(lastJobId: string) {
       success: false,
       message: "failed to fetch jobs: ",
       err,
+      jobs: []
     };
   }
 }

@@ -59,8 +59,8 @@ export default function JobDisplayList({
             </p>
           </div>
           <h2 className="text-3xl">
-            {job.company.length > 18
-              ? job.company.slice(0, 18) + "..."
+            {job.company.length > 25
+              ? job.company.slice(0, 25) + "..."
               : job.company}
           </h2>
           <p className="text-secondary-text text-xl">{job.job_title}</p>
