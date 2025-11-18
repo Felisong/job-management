@@ -122,7 +122,17 @@ router.get("/query-jobs/:query", async (req, res) => {
   try {
     const query = req.params.query;
     console.log(`backend receives query: `, query)
-
+    const results = await JobInfo.find({
+  $or: [
+    { company: { $regex: query, $options: 'i' } },
+    { job_title: { $regex: query, $options: 'i' } },
+    { state: { $regex: query, $options: 'i' } },
+    { job_description: { $regex: query, $options: 'i' } },
+    { other: { $regex: query, $options: 'i' } }
+  ]
+  })
+  console.log(`results: `, results)
+  res.status(200).json({success: true, message: 'got job'})
     
   } catch (err) {
     console.error(`error in querying jobs: `, err);
