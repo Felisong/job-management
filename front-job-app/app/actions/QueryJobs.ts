@@ -5,7 +5,6 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 export async function QueryJobs(query: string) {
-    console.log(`i get to the server: `, query)
   try {
     const res = await fetch(baseUrl + `/query-jobs/${query}`, {
       method: "GET",
@@ -18,7 +17,7 @@ export async function QueryJobs(query: string) {
     if (data.success) {
       return {
         success: true,
-        message: "deleted job",
+        message: "fetched jobs matching condition",
         jobs: data.jobs || []
       };
     } else {
@@ -27,7 +26,7 @@ export async function QueryJobs(query: string) {
   } catch (err: unknown) {
     return {
       success: false,
-      message: `failed to delete job: ` + err,
+      message: `failed to fetch job: ` + err,
       jobs: []
     };
   }

@@ -1,5 +1,7 @@
 "use client";
 
+// i can make this into a class to call validations from but eh
+
 export const isFieldEmpty = (value: string, label: string): string => {
   if (value.trim().length === 0) {
     return `Please enter a valid ${label}.`;

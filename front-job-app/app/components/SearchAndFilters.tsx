@@ -1,23 +1,33 @@
 "use client"
 import { useState } from "react";
 import { QueryJobs } from "../actions/QueryJobs";
+import { JobInformationModel } from "@/types";
+import { useToast } from "../utils/context/ShowToastContext";
 
-export default function SearchAndFilters() {
+export default function SearchAndFilters({handleSetJobs} : {handleSetJobs : (jobs: JobInformationModel[]) => void}) {
   const [query, setQuery] = useState<string>("");
+  const toast = useToast();
   // handles the query state change
   function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
     setQuery(e.target.value);
   }
 
   // function fetching data that matches the query
-  async function handleQuerySearch(e : React.MouseEvent<HTMLButtonElement>){
+  async function handleQuerySearch(e : React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>){
     e.preventDefault();
     try {
       const queryResult = await QueryJobs(query);
-      console.log(`result: `, queryResult)
+      if (!queryResult.success) throw new Error('Failed to fetch from server');
 
+      if (queryResult.jobs.length === 0){
+        toast.triggerToast({message: 'No jobs found matching those keywords.', isError: false, showToast: true})
+      } else {
+        handleSetJobs(queryResult.jobs)
+      }
     } catch (err: unknown){
       console.log(`woops :]` + err)
+      toast.triggerToast({message: `failed: ${err}`, isError: true, showToast: true})
+
     }
   }
  
@@ -53,7 +63,10 @@ export default function SearchAndFilters() {
     </defs>
   </svg>
         </button>
-        <input type="text" name="search" className="w-full h-full text-black p-4" value={query} onChange={handleQueryChange}/>
+        <input type="text" name="search" className="w-full h-full text-black p-4" value={query} onChange={handleQueryChange} onKeyDown={(e) => {
+          if (e.key === 'Enter'){
+            handleQuerySearch(e)
+          }}}/>
       </form>
       <button className="text-2xl">Filters</button>
     </div>

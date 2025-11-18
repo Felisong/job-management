@@ -118,22 +118,43 @@ router.put("/update-job", async (req, res) => {
 });
 
 router.get("/query-jobs/:query", async (req, res) => {
-  console.log(`PING`)
   try {
-    const query = req.params.query;
-    console.log(`backend receives query: `, query)
+    const incomingQueries = req.params.query;
+    const queries = incomingQueries.split(" ").filter((q => q.trim() !== ''));
+    const allConditions = [];
+    // building the conditions for each query
+    for (const query of queries){
+      const queryDate = new Date(query);
+
+      const queryConditions = [
+      { company: { $regex: query, $options: 'i' } },
+      { job_title: { $regex: query, $options: 'i' } },
+      { state: { $regex: query, $options: 'i' } },
+      { job_description: { $regex: query, $options: 'i' } },
+      { other: { $regex: query, $options: 'i' } }
+    ]
+    // checks if the date is a valid date, if so, adds greater than and less then entries to get the whole day
+    if (!isNaN(queryDate)){
+      const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
+      const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
+
+      queryConditions.push({ date_sent: {
+          $gte: startOfDay,
+          $lte: endOfDay
+        }})
+
+    }
+    allConditions.push({$or: queryConditions})
+    }
+
     const results = await JobInfo.find({
-  $or: [
-    { company: { $regex: query, $options: 'i' } },
-    { job_title: { $regex: query, $options: 'i' } },
-    { state: { $regex: query, $options: 'i' } },
-    { job_description: { $regex: query, $options: 'i' } },
-    { other: { $regex: query, $options: 'i' } }
-  ]
-  })
-  console.log(`results: `, results)
-  res.status(200).json({success: true, message: 'got job'})
-    
+      $or: allConditions
+    }).sort({_id : -1}).limit(100)
+    if (results.length === 0){
+      res.status(200).json({success: true, message: 'no jobs found matching the query', jobs: []});
+    } else {
+      res.status(200).json({success: true, message: 'jobs found', jobs: results});
+    }
   } catch (err) {
     console.error(`error in querying jobs: `, err);
     res.status(500).json({success: false, message: "failed to get jobs matching the query"})

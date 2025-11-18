@@ -34,12 +34,20 @@ export default function Home() {
       setLoading(false);
     }
   }
+  function handleSetJobs(jobs: JobInformationModel[]){
+    setJobs(jobs);
+  }
+
+
+
+  // initial fetch
   useEffect(() => {
     if (!hasFetchedRef.current) {
       hasFetchedRef.current = true;
       fetchJobs();
     }
   }, []);
+  // loading more was we scroll down and get the invisible div on screen
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       // if  item is intersecting, and more jobs is true, loading is false and initial data loaded correctly
@@ -61,7 +69,7 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <SearchAndFilters />
+      <SearchAndFilters handleSetJobs={handleSetJobs}/>
       <button className="mb-4 text-2xl" onClick={openModal}>
         Add new Job
       </button>
