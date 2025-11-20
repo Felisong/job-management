@@ -25,9 +25,7 @@ export default function SearchAndFilters({handleSetJobs} : {handleSetJobs : (job
         handleSetJobs(queryResult.jobs)
       }
     } catch (err: unknown){
-      console.log(`woops :]` + err)
-      toast.triggerToast({message: `failed: ${err}`, isError: true, showToast: true})
-
+      toast.triggerToast({message: `Failed: ${err}`, isError: true, showToast: true})
     }
   }
  

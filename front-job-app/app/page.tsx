@@ -10,6 +10,7 @@ import { useModal } from "./utils/context/AddModalContext";
 export default function Home() {
   const { openModal } = useModal();
   const observerRef = useRef<HTMLDivElement>(null);
+  const queryActiveRef = useRef(false);
   const hasFetchedRef = useRef(false);
   const [lastJobId, setLastJobId] = useState<string>("");
   const [jobs, setJobs] = useState<JobInformationModel[]>([]);
@@ -22,7 +23,7 @@ export default function Home() {
     try {
       setLoading(true);
       const data = await FetchAllJobs(lastJobId);
-      setJobs((jobs : JobInformationModel[]) => [...jobs, ...data.jobs]);
+      setJobs((jobs: JobInformationModel[]) => [...jobs, ...data.jobs]);
       setHasMoreJobs(data.nextExpectedId ? true : false);
       setLastJobId(data.nextExpectedId?.toString());
       setInitialized(true);
@@ -34,14 +35,13 @@ export default function Home() {
       setLoading(false);
     }
   }
-  function handleSetJobs(jobs: JobInformationModel[]){
+  function handleSetJobs(jobs: JobInformationModel[]) {
+    queryActiveRef.current = true;
     setJobs(jobs);
   }
-
-
-
   // initial fetch
   useEffect(() => {
+    if (queryActiveRef.current) return;
     if (!hasFetchedRef.current) {
       hasFetchedRef.current = true;
       fetchJobs();
@@ -50,6 +50,7 @@ export default function Home() {
   // loading more was we scroll down and get the invisible div on screen
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
+      if (queryActiveRef.current) return;
       // if  item is intersecting, and more jobs is true, loading is false and initial data loaded correctly
       if (entries[0].isIntersecting && hasMoreJobs && !loading && initialized) {
         fetchJobs();
@@ -69,7 +70,7 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <SearchAndFilters handleSetJobs={handleSetJobs}/>
+      <SearchAndFilters handleSetJobs={handleSetJobs} />
       <button className="mb-4 text-2xl" onClick={openModal}>
         Add new Job
       </button>

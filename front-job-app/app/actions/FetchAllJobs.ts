@@ -9,7 +9,6 @@ const baseUrl =
 
 export default async function FetchAllJobs(lastJobId: string) {
   try {
-    console.log(`baseUrl: `, baseUrl)
     let jobsList : JobInformationModel[] = [];
     const url = lastJobId
       ? `${baseUrl}/jobs?lastJobId=${lastJobId}`
@@ -26,7 +25,7 @@ export default async function FetchAllJobs(lastJobId: string) {
       jobs: jobsList,
       nextExpectedId: data.nextExpectedId,
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
       message: "failed to fetch jobs: ",
