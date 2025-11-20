@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/utils/Spinner";
 import { DeleteJob } from "@/app/actions/DeleteJob";
 
-export default function viewJob({
+export default function ViewJob({
   params,
 }: {
   params: Promise<{ id: string; isEdit: string }>;
@@ -39,7 +39,7 @@ export default function viewJob({
       } else {
         throw new Error("Unable to fetch job data");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setErrMessage(`Failed to get job information`);
     } finally {
       setLoading(false);

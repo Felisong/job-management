@@ -28,6 +28,7 @@ export default function DropDownInput({
         <option value="rejected">Rejected</option>
         <option value="awaiting_response">Awaiting Response</option>
         <option value="awaiting_interview">Awaiting Interview</option>
+        <option value="awaiting_interview_results">Awaiting Interview Results</option>
         <option value="offered">Offered</option>
       </select>
       {validation !== "" && touched && (

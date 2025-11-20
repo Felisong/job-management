@@ -6,6 +6,7 @@ import DateInputComponent from "@/app/components/DateInputComponent";
 import { useEffect, useState } from "react";
 import DropDownInput from "@/app/components/DropDownInput";
 import EditJob from "@/app/actions/EditJob";
+import { useToast } from "@/app/utils/context/ShowToastContext";
 
 export default function EditPage({
   job,
@@ -14,6 +15,7 @@ export default function EditPage({
   job: JobInformationModel;
   updateJobData: () => void;
 }) {
+  const toast = useToast();
   const [jobInfo, setJobInfo] = useState(job);
   function handleTextChange(field: keyof JobInformationModel) {
     return (
@@ -36,8 +38,8 @@ export default function EditPage({
       } else {
         throw new Error(updateJob.message);
       }
-    } catch (err: any) {
-      console.log(`handle edit err: `, err);
+    } catch (err: unknown) {
+      toast.triggerToast({message: `Error: ` + err, isError: true, showToast: true})
     }
   }
 
@@ -60,7 +62,7 @@ export default function EditPage({
         value={jobInfo.job_title}
         onChange={handleTextChange("job_title")}
       />
-      <DropDownInput onChange={handleTextChange("state")} />
+      <DropDownInput value={jobInfo.state} onChange={handleTextChange("state")} />
       <TextAreaComponent
         label="Job Description"
         value={jobInfo.job_description ? jobInfo.job_description : ""}
