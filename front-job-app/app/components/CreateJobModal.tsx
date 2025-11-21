@@ -22,7 +22,7 @@ export default function CreateJobModal() {
     2,
     "0"
   )}-${String(d.getDate()).padStart(2, "0")}T00:00:00.000Z`;
-  
+
   const [jobInfo, setJobInfo] = useState<JobInformationModel>({
     _id: "",
     company: "",
@@ -46,7 +46,7 @@ export default function CreateJobModal() {
       }));
     };
   }
-
+  // sends the fetch and handles the results of that fetch
   async function handleCreateJob() {
     try {
       const result = await CreateJob(jobInfo);
@@ -76,7 +76,7 @@ export default function CreateJobModal() {
     } catch (err: unknown) {
       if (String(err).startsWith("Failed to fetch")) {
         toast.triggerToast({
-          message: `Failed to communicate with API, please ereach out to carolinahs100@gmail.com`,
+          message: `Failed to communicate with API, please reach out to carolinahs100@gmail.com`,
           isError: false,
           showToast: true,
         });
