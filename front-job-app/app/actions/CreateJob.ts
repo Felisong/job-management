@@ -23,7 +23,7 @@ export async function CreateJob(job: JobInformationModel) {
     if (data.success) {
       return {
         success: true,
-        message: "deleted job",
+        message: "Successfully created job.",
       };
     } else {
       throw new Error(data.message);
@@ -31,7 +31,7 @@ export async function CreateJob(job: JobInformationModel) {
   } catch (err: unknown) {
     return {
       success: false,
-      message: `failed to delete job: ` + err,
+      message: `failed to create job: ` + err,
     };
   }
 }

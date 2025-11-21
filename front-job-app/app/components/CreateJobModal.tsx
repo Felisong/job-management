@@ -10,16 +10,24 @@ import { useModal } from "../utils/context/AddModalContext";
 import { isFieldEmpty, isRealDate } from "../utils/validation";
 import { CreateJob } from "../actions/CreateJob";
 import { useToast } from "../utils/context/ShowToastContext";
+import { useRouter } from "next/navigation";
 
 export default function CreateJobModal() {
   const toast = useToast();
+  const router = useRouter();
   const { isOpen, closeModal } = useModal();
   const [formIsValid, setFormIsValid] = useState<boolean>(false);
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(d.getDate()).padStart(2, "0")}T00:00:00.000Z`;
+  
   const [jobInfo, setJobInfo] = useState<JobInformationModel>({
     _id: "",
     company: "",
     job_title: "",
-    date_sent: "",
+    date_sent: today || '',
     state: "awaiting_response",
     job_description: "",
     other: "",
@@ -38,6 +46,7 @@ export default function CreateJobModal() {
       }));
     };
   }
+
   async function handleCreateJob() {
     try {
       const result = await CreateJob(jobInfo);
@@ -51,16 +60,20 @@ export default function CreateJobModal() {
           _id: "",
           company: "",
           job_title: "",
-          date_sent: "",
+          date_sent: today,
           state: "awaiting_response",
           job_description: "",
           other: "",
         });
         closeModal();
+
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
       } else {
         throw new Error(result.message);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (String(err).startsWith("Failed to fetch")) {
         toast.triggerToast({
           message: `Failed to communicate with API, please ereach out to carolinahs100@gmail.com`,
@@ -84,7 +97,7 @@ export default function CreateJobModal() {
         _id: "",
         company: "",
         job_title: "",
-        date_sent: "",
+        date_sent: today,
         state: "awaiting_response",
         job_description: "",
         other: "",

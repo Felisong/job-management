@@ -13,7 +13,7 @@ export default function DateInputComponent({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   validation?: string;
 }) {
-  console.log(validation);
+  // console.log(`date coming in: `, value);
   const date = value.split("T")[0];
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
   const [touched, setTouched] = useState(false);

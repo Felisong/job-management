@@ -8,18 +8,19 @@ import FetchJob from "@/app/actions/FetchJob";
 import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/utils/Spinner";
 import { DeleteJob } from "@/app/actions/DeleteJob";
+import { useToast } from "@/app/utils/context/ShowToastContext";
 
 export default function ViewJob({
   params,
 }: {
   params: Promise<{ id: string; isEdit: string }>;
 }) {
-  // this has the job id, and isEdit inside to flag whether user is editing or not.
+  const toast = useToast();
   const route = useRouter();
+  // this has the job id, and isEdit inside to flag whether user is editing or not.
   const parameters = React.use(params) || {};
   const [loading, setLoading] = useState<boolean>(true);
   const [redirectClicked, setRedirectClicked] = useState<boolean>(false);
-  const [errMessage, setErrMessage] = useState<string>("");
   const [job, setJob] = useState<JobInformationModel>({
     _id: "",
     company: "",
@@ -40,7 +41,7 @@ export default function ViewJob({
         throw new Error("Unable to fetch job data");
       }
     } catch (err: unknown) {
-      setErrMessage(`Failed to get job information`);
+      toast.triggerToast({message: 'Error: ' + err, isError: true, showToast: true})
     } finally {
       setLoading(false);
     }
@@ -50,13 +51,12 @@ export default function ViewJob({
   async function handleDeleteClick(jobId: string) {
     const req = await DeleteJob(jobId);
     if (req.success) {
-      // show toast here
+      toast.triggerToast({message: 'Successfully deleted job', isError: false, showToast: true})
       setTimeout(() => {
         route.push("/");
       }, 1500);
     } else {
-      //show toast
-      console.log(`failed to delete`);
+     toast.triggerToast({message: 'Error: ' + req.message, isError: true, showToast: true})
     }
   }
 
