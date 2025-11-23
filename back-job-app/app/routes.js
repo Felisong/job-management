@@ -120,46 +120,163 @@ router.put("/update-job", async (req, res) => {
 router.get("/query-jobs/:query", async (req, res) => {
   try {
     const incomingQueries = req.params.query;
-    const queries = incomingQueries.split(" ").filter((q => q.trim() !== ''));
+    const queries = incomingQueries.split(" ").filter((q) => q.trim() !== "");
     const allConditions = [];
     // building the conditions for each query
-    for (const query of queries){
+    for (const query of queries) {
       const queryDate = new Date(query);
 
       const queryConditions = [
-      { company: { $regex: query, $options: 'i' } },
-      { job_title: { $regex: query, $options: 'i' } },
-      { state: { $regex: query, $options: 'i' } },
-      { job_description: { $regex: query, $options: 'i' } },
-      { other: { $regex: query, $options: 'i' } }
-    ]
-    // checks if the date is a valid date, if so, adds greater than and less then entries to get the whole day
-    if (!isNaN(queryDate)){
-      const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
-      const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
+        { company: { $regex: query, $options: "i" } },
+        { job_title: { $regex: query, $options: "i" } },
+        { state: { $regex: query, $options: "i" } },
+        { job_description: { $regex: query, $options: "i" } },
+        { other: { $regex: query, $options: "i" } },
+      ];
+      // checks if the date is a valid date, if so, adds greater than and less then entries to get the whole day
+      if (!isNaN(queryDate)) {
+        const startOfDay = new Date(queryDate.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(queryDate.setHours(23, 59, 59, 999));
 
-      queryConditions.push({ date_sent: {
-          $gte: startOfDay,
-          $lte: endOfDay
-        }})
-
-    }
-    allConditions.push({$or: queryConditions})
+        queryConditions.push({
+          date_sent: {
+            $gte: startOfDay,
+            $lte: endOfDay,
+          },
+        });
+      }
+      allConditions.push({ $or: queryConditions });
     }
 
     // TODO: instead of sorting by ID, let's sort by a counter. how many match the keywords? if they have more than 2 in one i shoudl check for that.
-    const results = await JobInfo.find({
-      $or: allConditions
-    }).sort({_id : -1}).limit(100)
-    if (results.length === 0){
-      res.status(200).json({success: true, message: 'no jobs found matching the query', jobs: []});
+    const results = await JobInfo.aggregate([
+      { $match: { $or: allConditions } },
+      {
+        $addFields: {
+          matchCount: {
+            $add: queries.map((query) => {
+              const queryDate = new Date(query);
+              const dateMatch = !isNaN(queryDate)
+                ? {
+                    $cond: [
+                      {
+                        $and: [
+                          {
+                            $gte: [
+                              "$date_sent",
+                              new Date(queryDate.setHours(0, 0, 0, 0)),
+                            ],
+                          },
+                          {
+                            $lte: [
+                              "$date_sent",
+                              new Date(queryDate.setHours(23, 59, 59, 999)),
+                            ],
+                          },
+                        ],
+                      },
+                      1,
+                      0,
+                    ],
+                  }
+                : 0;
+
+              return {
+                $add: [
+                  {
+                    $cond: [
+                      {
+                        $regexMatch: {
+                          input: { $ifNull: ["$company", ""] },
+                          regex: query,
+                          options: "i",
+                        },
+                      },
+                      1,
+                      0,
+                    ],
+                  },
+                  {
+                    $cond: [
+                      {
+                        $regexMatch: {
+                          input: { $ifNull: ["$job_title", ""] },
+                          regex: query,
+                          options: "i",
+                        },
+                      },
+                      1,
+                      0,
+                    ],
+                  },
+                  {
+                    $cond: [
+                      {
+                        $regexMatch: {
+                          input: { $ifNull: ["$state", ""] },
+                          regex: query,
+                          options: "i",
+                        },
+                      },
+                      1,
+                      0,
+                    ],
+                  },
+                  {
+                    $cond: [
+                      {
+                        $regexMatch: {
+                          input: { $ifNull: ["$job_description", ""] },
+                          regex: query,
+                          options: "i",
+                        },
+                      },
+                      1,
+                      0,
+                    ],
+                  },
+                  {
+                    $cond: [
+                      {
+                        $regexMatch: {
+                          input: { $ifNull: ["$other", ""] },
+                          regex: query,
+                          options: "i",
+                        },
+                      },
+                      1,
+                      0,
+                    ],
+                  },
+                  dateMatch,
+                ],
+              };
+            }),
+          },
+        },
+      },
+      { $sort: { matchCount: -1 } },
+      { $limit: 100 },
+    ]);
+
+    if (results.length === 0) {
+      res.status(200).json({
+        success: true,
+        message: "no jobs found matching the query",
+        jobs: [],
+      });
     } else {
-      res.status(200).json({success: true, message: 'jobs found', jobs: results});
+      res
+        .status(200)
+        .json({ success: true, message: "jobs found", jobs: results });
     }
   } catch (err) {
     console.error(`error in querying jobs: `, err);
-    res.status(500).json({success: false, message: "failed to get jobs matching the query"})
+    res.status(500).json({
+      success: false,
+      message: "failed to get jobs matching the query",
+    });
   }
-})
+});
 
 module.exports = router;
