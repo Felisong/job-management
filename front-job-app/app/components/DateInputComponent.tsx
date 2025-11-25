@@ -13,9 +13,11 @@ export default function DateInputComponent({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   validation?: string;
 }) {
-  const date = value.split("T")[0];
+  let date = value;
+  if (value.includes('T')){
+    date = value.split("T")[0];
+  }
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
-  // add value to be prepopulated here.
   return (
     <div className="h-fit">
       <div className="flex flex-col relative">

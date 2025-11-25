@@ -3,7 +3,6 @@
 // i can make this into a class to call validations from but eh
 
 export const isFieldEmpty = (value: string, label: string): string => {
-  console.log(`value: `, value)
   if (value.trim().length === 0) {
     return `Please enter a valid ${label}.`;
   } else if (value.trim().length < 4) {
@@ -14,6 +13,7 @@ export const isFieldEmpty = (value: string, label: string): string => {
 };
 
 export const isRealDate = (value: string): string => {
+  console.log(`value: `, value)
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return "Please enter a valid date as yyyy-mm-dd";
   }

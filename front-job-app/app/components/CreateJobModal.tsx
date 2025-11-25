@@ -21,7 +21,7 @@ export default function CreateJobModal() {
   const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
     2,
     "0"
-  )}-${String(d.getDate()).padStart(2, "0")}T00:00:00.000Z`;
+  )}-${String(d.getDate()).padStart(2, "0")}`;
 
   const [jobInfo, setJobInfo] = useState<JobInformationModel>({
     _id: "",
