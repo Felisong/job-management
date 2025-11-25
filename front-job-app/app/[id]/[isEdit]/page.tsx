@@ -70,7 +70,10 @@ export default function ViewJob({
     if (parameters.id) {
       fetchJob();
     } else {
-      console.log(`no id?: `, parameters.id);
+      toast.triggerToast({message: 'Failed to get job, will direct home.', isError: true, showToast: true});
+      setTimeout(() => {
+        route.push("/");
+      })
     }
   }, [parameters.id]);
 

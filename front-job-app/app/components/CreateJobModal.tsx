@@ -116,6 +116,7 @@ export default function CreateJobModal() {
       : setFormIsValid(false);
   }, [jobInfo]);
 
+
   if (!isOpen) return null;
   return (
     <div className="glassmorphism fixed inset-0 flex justify-center flex-col w-full items-center ">

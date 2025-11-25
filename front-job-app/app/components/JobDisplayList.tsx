@@ -4,12 +4,14 @@ import { JobInformationModel } from "@/types";
 import { DeleteJob } from "../actions/DeleteJob";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "../utils/context/ShowToastContext";
 
 export default function JobDisplayList({
   jobs,
 }: {
   jobs: JobInformationModel[];
 }) {
+  const toast = useToast();
   const router = useRouter();
   // handles the array inside the component for ease of use
   const [displayedJobs, setDisplayedJobs] =
@@ -27,8 +29,7 @@ export default function JobDisplayList({
       const cleanedArr = displayedJobs.filter((j) => j._id !== jobId);
       setDisplayedJobs(cleanedArr);
     } else {
-      //show toast
-      console.log(`failed to delete`);
+      toast.triggerToast({message: 'Failed to delete job, please try again later', isError: true, showToast: true});
     }
   }
 

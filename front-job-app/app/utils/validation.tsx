@@ -3,6 +3,7 @@
 // i can make this into a class to call validations from but eh
 
 export const isFieldEmpty = (value: string, label: string): string => {
+  console.log(`value: `, value)
   if (value.trim().length === 0) {
     return `Please enter a valid ${label}.`;
   } else if (value.trim().length < 4) {

@@ -19,13 +19,12 @@ export default async function EditJob(job: JobInformationModel) {
       throw new Error("Unable to communicate with API");
     }
     const data = await res.json();
-    console.log(`returning data: `, data);
     if (data.success) {
       return { success: true, message: "i edit da job" };
     } else {
       throw new Error(data.message);
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     return { success: false, message: "failed to edit the Job" };
   }
 }

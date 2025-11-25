@@ -148,7 +148,6 @@ router.get("/query-jobs/:query", async (req, res) => {
       allConditions.push({ $or: queryConditions });
     }
 
-    // TODO: instead of sorting by ID, let's sort by a counter. how many match the keywords? if they have more than 2 in one i shoudl check for that.
     const results = await JobInfo.aggregate([
       { $match: { $or: allConditions } },
       {
