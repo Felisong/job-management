@@ -66,7 +66,7 @@ export default function SearchAndFilters({handleSetJobs} : {handleSetJobs : (job
             handleQuerySearch(e)
           }}}/>
       </form>
-      <button className="text-2xl">Filters</button>
+      {/* <button className="text-2xl">Filters</button> */}
     </div>
   );
 }
