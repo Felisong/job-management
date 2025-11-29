@@ -35,6 +35,7 @@ export default function Home() {
       setLoading(false);
     }
   }
+  // set Jobs from inside components
   function handleSetJobs(jobs: JobInformationModel[]) {
     queryActiveRef.current = true;
     setJobs(jobs);

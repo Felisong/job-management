@@ -68,7 +68,7 @@ export default function CreateJobModal() {
         closeModal();
 
         setTimeout(() => {
-          router.push("/");
+          window.location.href = "/";
         }, 1500);
       } else {
         throw new Error(result.message);
