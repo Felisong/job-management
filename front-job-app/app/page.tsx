@@ -19,6 +19,7 @@ export default function Home() {
   const [errMessage, setErrMessage] = useState<string>("");
   const [initialized, setInitialized] = useState<boolean>(false);
 
+
   async function fetchJobs() {
     try {
       setLoading(true);
@@ -76,7 +77,7 @@ export default function Home() {
         Add new Job
       </button>
       {jobs.length > 0 && (
-        <div className="bg-secondary-backdrop">
+        <div className="">
           <JobDisplayList jobs={jobs}></JobDisplayList>
           <div ref={observerRef}></div>
         </div>
