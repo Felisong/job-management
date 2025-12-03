@@ -22,7 +22,7 @@ export default async function FetchJob(jobId: string) {
     } else {
       throw new Error("connected to API but failed to fetch information");
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error(`error in fetching job: ` + err);
     return {
       success: false,

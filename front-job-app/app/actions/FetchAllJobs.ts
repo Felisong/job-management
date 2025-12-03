@@ -24,6 +24,7 @@ export default async function FetchAllJobs(lastJobId: string) {
       message: "got all jobs",
       jobs: jobsList,
       nextExpectedId: data.nextExpectedId,
+      total: data.total
     };
   } catch (err: unknown) {
     return {

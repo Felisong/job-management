@@ -36,10 +36,14 @@ router.get("/jobs", async (req, res) => {
       ? { _id: { $lt: new mongoose.Types.ObjectId(lastJobId) } }
       : {};
 
-    let jobs = await JobInfo.find(query)
-      .select(`-job_description -other`)
-      .sort({ _id: -1 })
-      .limit(limit);
+    const [jobs, total] = await Promise.all([
+      JobInfo.find(query)
+        .select("-job_description -other")
+        .sort({ _id: -1 })
+        .limit(limit),
+      JobInfo.countDocuments({}),
+    ]);
+    console.log(`total `, total)
 
     const hasMore = jobs.length === limit;
     const nextJobId = hasMore ? jobs[jobs.length - 1]._id : null;
@@ -49,6 +53,7 @@ router.get("/jobs", async (req, res) => {
       jobs: jobs,
       message: "Successfully fetched job information",
       nextExpectedId: nextJobId,
+      total: total
     });
   } catch (err) {
     console.error(`error in jobs fetch :`, err);

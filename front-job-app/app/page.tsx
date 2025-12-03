@@ -12,6 +12,7 @@ export default function Home() {
   const observerRef = useRef<HTMLDivElement>(null);
   const queryActiveRef = useRef(false);
   const hasFetchedRef = useRef(false);
+  const [totalResults, setTotalResults] = useState<number>(0);
   const [lastJobId, setLastJobId] = useState<string>("");
   const [jobs, setJobs] = useState<JobInformationModel[]>([]);
   const [hasMoreJobs, setHasMoreJobs] = useState<boolean>(true);
@@ -26,6 +27,7 @@ export default function Home() {
       const data = await FetchAllJobs(lastJobId);
       setJobs((jobs: JobInformationModel[]) => [...jobs, ...data.jobs]);
       setHasMoreJobs(data.nextExpectedId ? true : false);
+      setTotalResults(data.total);
       setLastJobId(data.nextExpectedId?.toString());
       setInitialized(true);
     } catch (err: unknown) {
@@ -40,6 +42,7 @@ export default function Home() {
   function handleSetJobs(jobs: JobInformationModel[]) {
     queryActiveRef.current = true;
     setJobs(jobs);
+    setTotalResults(jobs.length);
   }
   // initial fetch
   useEffect(() => {
@@ -72,7 +75,7 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <SearchAndFilters handleSetJobs={handleSetJobs} />
+      <SearchAndFilters handleSetJobs={handleSetJobs} totalResults={totalResults}/>
       <button className="mb-4 text-2xl" onClick={openModal}>
         Add new Job
       </button>

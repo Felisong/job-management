@@ -4,7 +4,7 @@ import { QueryJobs } from "../actions/QueryJobs";
 import { JobInformationModel } from "@/types";
 import { useToast } from "../utils/context/ShowToastContext";
 
-export default function SearchAndFilters({handleSetJobs} : {handleSetJobs : (jobs: JobInformationModel[]) => void}) {
+export default function SearchAndFilters({handleSetJobs, totalResults} : {handleSetJobs : (jobs: JobInformationModel[]) => void, totalResults : number}) {
   const [query, setQuery] = useState<string>("");
   const toast = useToast();
   // handles the query state change
@@ -66,6 +66,7 @@ export default function SearchAndFilters({handleSetJobs} : {handleSetJobs : (job
             handleQuerySearch(e)
           }}}/>
       </form>
+      <p>{totalResults} Results</p>
       {/* <button className="text-2xl">Filters</button> */}
     </div>
   );
