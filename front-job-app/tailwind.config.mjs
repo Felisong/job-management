@@ -5,9 +5,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#FFBB27",
-        "backdrop-primary": "#0F0000",
-        "secondary-backdrop": "#2F1E00",
+        primary: "#092742ff",
+        "backdrop-primary": "#14001aff",
+        "secondary-backdrop": "#092742ff",
         "secondary-text": "#FFC9C9",
       },
     },
