@@ -20,6 +20,7 @@ I also made this to learn how to use docker in development.
 - [w3Schools](https://www.w3schools.com)
 - [Stack Overflow](https://stackoverflow.com/)
 - [Claude](https://claude.ai/new)
+- [svg to tsx converter](https://svg2jsx.com/)
 
 ### Goals
 

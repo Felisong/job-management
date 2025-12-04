@@ -1,14 +1,16 @@
 "use client";
 
+import UserButtonComponent from "./UserButtonComponent";
+
 
 
 export default function Header() {
   return (
-    <header className="w-full bg-primary flex justify-between p-4 px-6 items-center">
+    <header className="w-full bg-primary flex justify-between p-4 px-6 items-center relative">
       <h1 className="text-secondary-text">
         <a href={"/"}>Jobs Manager</a>
       </h1>
-      <div className="w-[50px] h-[50px] bg-red-600 rounded-full"></div>
+      <UserButtonComponent w={50} h={50}/>
     </header>
   );
 }
