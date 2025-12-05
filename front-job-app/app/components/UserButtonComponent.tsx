@@ -66,25 +66,27 @@ export default function UserButtonComponent({
           </defs>
         </svg>
       </button>
-      <div
-        className={`absolute left-0 top-[100%] w-full z-1 bg-secondary-backdrop flex flex-col transition duration-50 ease-in-out ${
-          showDropdown ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {list.map((option, i) => (
-          <div
-            key={option.value}
-            className=""
-          >
-            {i === 0 && <hr></hr>}
-            <button className="text-xl" onClick={(e) => {
-                e.preventDefault();
-                route.push(`/${option.value}`)
-            }}>{option.label}</button>
-            <hr />
-          </div>
-        ))}
-      </div>
+      {showDropdown && (
+        <div
+          className={`absolute left-0 top-[100%] w-full z-1 bg-secondary-backdrop flex flex-col`}
+        >
+          {list.map((option, i) => (
+            <div key={option.value}>
+              {i === 0 && <hr></hr>}
+              <button
+                className="text-xl"
+                onClick={(e) => {
+                  e.preventDefault();
+                  route.push(`/${option.value}`);
+                }}
+              >
+                {option.label}
+              </button>
+              <hr />
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 }
