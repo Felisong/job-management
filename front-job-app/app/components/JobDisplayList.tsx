@@ -2,9 +2,10 @@
 
 import { JobInformationModel } from "@/types";
 import { DeleteJob } from "../actions/DeleteJob";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../utils/context/ShowToastContext";
+import BasicButtonComponent from "./BasicButtonComponent";
 
 export default function JobDisplayList({
   jobs,
@@ -19,22 +20,27 @@ export default function JobDisplayList({
 
   // redirect the user for view or edit page.
   function handleRedirect(jobId: string, isEditing: boolean = false) {
-    router.push(`/${jobId}/${isEditing}`);
+    return (e: MouseEvent) => {
+      e.preventDefault();
+      router.push(`/${jobId}/${isEditing}`);
+    };
   }
-
   // delete a job
-  async function handleDeleteClick(jobId: string) {
-    const req = await DeleteJob(jobId);
-    if (req.success) {
-      const cleanedArr = displayedJobs.filter((j) => j._id !== jobId);
-      setDisplayedJobs(cleanedArr);
-    } else {
-      toast.triggerToast({
-        message: "Failed to delete job, please try again later",
-        isError: true,
-        showToast: true,
-      });
-    }
+  function handleDeleteClick(jobId: string) {
+    return async (e: MouseEvent) => {
+      e.preventDefault();
+      const req = await DeleteJob(jobId);
+      if (req.success) {
+        const cleanedArr = displayedJobs.filter((j) => j._id !== jobId);
+        setDisplayedJobs(cleanedArr);
+      } else {
+        toast.triggerToast({
+          message: "Failed to delete job, please try again later",
+          isError: true,
+          showToast: true,
+        });
+      }
+    };
   }
 
   // keeps the array updated as jobs loads in more.
@@ -47,18 +53,27 @@ export default function JobDisplayList({
       {displayedJobs.map((job: JobInformationModel, i) => {
         const date = new Date(job.date_sent ? job.date_sent : "");
         const currentMonth = date.getMonth();
-        const prevMonth = i > 0 ? new Date(displayedJobs[i - 1].date_sent!).getMonth() : null;
-        const nextMonth = i < displayedJobs.length - 1 ? new Date(displayedJobs[i + 1].date_sent!).getMonth() : null;
-        const isLastItem = i === displayedJobs.length - 1 ||  currentMonth !== nextMonth;
+        const prevMonth =
+          i > 0 ? new Date(displayedJobs[i - 1].date_sent!).getMonth() : null;
+        const nextMonth =
+          i < displayedJobs.length - 1
+            ? new Date(displayedJobs[i + 1].date_sent!).getMonth()
+            : null;
+        const isLastItem =
+          i === displayedJobs.length - 1 || currentMonth !== nextMonth;
         const showMonth = i === 0 || currentMonth !== prevMonth;
         return (
           <div key={job._id}>
             {showMonth && (
               <li className="text-2xl front-bold my-4">
-                {date.toLocaleString('en-US', {month: 'long'})}
+                {date.toLocaleString("en-US", { month: "long" })}
               </li>
             )}
-            <li className={`px-4 relative bg-secondary-backdrop ${showMonth && 'rounded-t-xl'} ${isLastItem && 'rounded-b-xl'}`}>
+            <li
+              className={`px-4 relative bg-secondary-backdrop ${
+                showMonth && "rounded-t-xl"
+              } ${isLastItem && "rounded-b-xl"}`}
+            >
               <div
                 className={`w-8 h-8 rounded absolute right-0 top-0 text-backdrop-primary ${
                   job.state === "awaiting_response"
@@ -83,29 +98,20 @@ export default function JobDisplayList({
               </h2>
               <p className="text-secondary-text text-xl">{job.job_title}</p>
               <div className="flex justify-between p-4 text-xl items-end">
-                <button
-                  onClick={() => {
-                    handleRedirect(job._id, true);
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => {
-                    handleDeleteClick(job._id);
-                  }}
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => {
-                    handleRedirect(job._id, false);
-                  }}
-                >
-                  View
-                </button>
+                <BasicButtonComponent
+                  label="Edit"
+                  action={handleRedirect(job._id, true)}
+                />
+                <BasicButtonComponent
+                  label="Delete"
+                  action={handleDeleteClick(job._id)}
+                />
+                <BasicButtonComponent
+                  label="View"
+                  action={handleRedirect(job._id, true)}
+                />
               </div>
-              {(showMonth && !isLastItem) || !isLastItem ? <hr></hr> : null}
+              {!isLastItem ? <hr /> : null}
             </li>
           </div>
         );

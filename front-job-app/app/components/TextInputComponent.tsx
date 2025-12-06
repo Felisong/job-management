@@ -7,11 +7,13 @@ export default function TextInputComponent({
   value,
   onChange,
   validation = "",
+  type = 'text'
 }: {
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   validation?: string;
+  type?: string
 }) {
   const partnerName = label.replaceAll(" ", "-").toLowerCase();
   const [touched, setTouched] = useState(false);
@@ -34,7 +36,7 @@ export default function TextInputComponent({
           onFocus={() => {
             setTouched(true);
           }}
-          type="text"
+          type={type}
           name={partnerName}
           className="bg-white h-full text-black p-4 rounded"
           onChange={onChange}

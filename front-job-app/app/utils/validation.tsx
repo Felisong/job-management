@@ -13,7 +13,7 @@ export const isFieldEmpty = (value: string, label: string): string => {
 };
 
 export const isRealDate = (value: string): string => {
-  console.log(`value: `, value)
+  console.log(`value: `, value);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return "Please enter a valid date as yyyy-mm-dd";
   }
@@ -27,3 +27,28 @@ export const isValidEmail = (email: string): string => {
     return "Please enter a valid Email";
   }
 };
+
+// Source - https://stackoverflow.com/a
+// Posted by Srinivas, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-12-06, License - CC BY-SA 4.0
+// thank you Srinvas!
+export const passwordValidation = (value: string): string => {
+  const pw = value.trim();
+  const lettersRegex = /^(?=.*[A-Za-z])/;
+  const numberRegex = /^(?=.*d)/;
+  const specialCharRegex = /^(?=.*[@$!%*#?&])/;
+
+  if (pw === "") return "Please enter a valid password";
+  if (pw.length < 7) return "Password must be longer or equal to 8.";
+  if (!lettersRegex.test(pw))
+    return "Password must contain 1 upper and lower case letter each.";
+  if (!numberRegex.test(pw)) return "Password must contain 1 number.";
+  if (!specialCharRegex.test(pw))
+    return "Password must contain one special character";
+  return "";
+};
+
+export const matchesPassword = (value: string, pw: string): string => {
+  if (value !== pw) return "Does not match password."
+  return "";
+ }
