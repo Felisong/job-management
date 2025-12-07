@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useState } from "react";
 import TextInputComponent from "../components/TextInputComponent";
-import { isFieldEmpty } from "../utils/validation";
+import { isFieldEmpty, isValidPassword } from "../utils/validation";
 import Link from "next/link";
 import BasicButtonComponent from "../components/BasicButtonComponent";
 interface userValueModel {
@@ -18,9 +18,11 @@ export default function SignInPage() {
 
   function textChange(key: keyof userValueModel) {
     return (e: ChangeEvent<HTMLInputElement>) => {
+        console.log(`this should be triggering`)
       userValues[key] = e.target.value;
     };
   }
+  // changes to sign in or registration
   function handleSwitch() {
     return (e: MouseEvent) => {
     }
@@ -38,9 +40,9 @@ export default function SignInPage() {
         label="Password"
         onChange={textChange("password")}
         value={userValues.password}
-        validation={isFieldEmpty(userValues.username, 'username')}
+        validation={isValidPassword(userValues.username)}
       />
-      <BasicButtonComponent label="Sign In" action={handleSwitch} />
+      <BasicButtonComponent classes="text-xl py-4" label="Sign In" action={handleSwitch} />
       <button>Click here to Register for an account</button>
     </div>
   );

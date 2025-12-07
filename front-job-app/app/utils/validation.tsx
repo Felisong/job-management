@@ -32,7 +32,7 @@ export const isValidEmail = (email: string): string => {
 // Posted by Srinivas, modified by community. See post 'Timeline' for change history
 // Retrieved 2025-12-06, License - CC BY-SA 4.0
 // thank you Srinvas!
-export const passwordValidation = (value: string): string => {
+export const isValidPassword = (value: string): string => {
   const pw = value.trim();
   const lettersRegex = /^(?=.*[A-Za-z])/;
   const numberRegex = /^(?=.*d)/;
@@ -48,7 +48,7 @@ export const passwordValidation = (value: string): string => {
   return "";
 };
 
-export const matchesPassword = (value: string, pw: string): string => {
+export const isMatchingPassword = (value: string, pw: string): string => {
   if (value !== pw) return "Does not match password."
   return "";
  }

@@ -6,9 +6,11 @@ import Spinner from "./utils/Spinner";
 export default function BasicButtonComponent({
   label,
   action,
+  classes = ''
 }: {
   label: string;
   action: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  classes?: string;
 }) {
   const [clicked, setClicked] = useState<boolean>(false);
 
@@ -18,6 +20,7 @@ export default function BasicButtonComponent({
         <Spinner />
       ) : (
         <button
+        className={classes && `${classes}`}
           onClick={(e) => {
             action(e);
             setClicked(true);
