@@ -35,7 +35,7 @@ export const isValidEmail = (email: string): string => {
 export const isValidPassword = (value: string): string => {
   const pw = value.trim();
   const lettersRegex = /^(?=.*[A-Za-z])/;
-  const numberRegex = /^(?=.*d)/;
+  const numberRegex = /.*[0-9].*/;
   const specialCharRegex = /^(?=.*[@$!%*#?&])/;
 
   if (pw === "") return "Please enter a valid password";
