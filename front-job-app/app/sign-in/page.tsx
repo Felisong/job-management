@@ -53,12 +53,14 @@ export default function SignInPage() {
             onChange={textChange("password")}
             value={userValues.password}
             validation={isValidPassword(userValues.password)}
+            type="password"
           />
           <TextInputComponent
             label="Confirm Password"
             onChange={textChange("confirmPassword")}
             value={userValues.confirmPassword}
             validation={isMatchingPassword(userValues.confirmPassword, userValues.password)}
+            type="password"
           />
         </>
       ) : (
