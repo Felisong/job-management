@@ -2,7 +2,11 @@
 
 import { ChangeEvent, MouseEvent, useState } from "react";
 import TextInputComponent from "../components/TextInputComponent";
-import { isFieldEmpty, isMatchingPassword, isValidPassword } from "../utils/validation";
+import {
+  isFieldEmpty,
+  isMatchingPassword,
+  isValidPassword,
+} from "../utils/validation";
 import BasicButtonComponent from "../components/BasicButtonComponent";
 interface userValueModel {
   username: string;
@@ -15,7 +19,7 @@ export default function SignInPage() {
   const [userValues, setUserValues] = useState<userValueModel>({
     username: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   function textChange(key: keyof userValueModel) {
@@ -25,10 +29,14 @@ export default function SignInPage() {
   }
   // changes to sign in or registration
   function handleSwitch(e: MouseEvent) {
-      e.preventDefault();
-      console.log(`switch triggered: `, isRegistering);
-      setIsRegistering((prev) => !prev);
-    };
+    e.preventDefault();
+    setIsRegistering((prev) => !prev);
+    setUserValues({
+      username: "",
+      password: "",
+      confirmPassword: "",
+    });
+  }
 
   function handleSubmit(type: string) {
     return (e: MouseEvent) => {
@@ -59,7 +67,10 @@ export default function SignInPage() {
             label="Confirm Password"
             onChange={textChange("confirmPassword")}
             value={userValues.confirmPassword}
-            validation={isMatchingPassword(userValues.confirmPassword, userValues.password)}
+            validation={isMatchingPassword(
+              userValues.confirmPassword,
+              userValues.password
+            )}
             type="password"
           />
         </>
@@ -76,6 +87,7 @@ export default function SignInPage() {
             onChange={textChange("password")}
             value={userValues.password}
             validation={isValidPassword(userValues.username)}
+            type="password"
           />
         </>
       )}

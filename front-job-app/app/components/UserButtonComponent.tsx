@@ -15,9 +15,9 @@ export default function UserButtonComponent({
   const route = useRouter();
   const [showDropdown, setShowDropDown] = useState<boolean>(false);
   const [list, setList] = useState<{ label: string; value: string }[]>([
-    { label: "Sign In", value: "sign-in" },
+    { label: "Sign In / Register", value: "sign-in" },
     { label: "Sign out", value: "sign-out" },
-    { label: "Register", value: "register" },
+    
   ]);
   return (
     <>

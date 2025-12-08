@@ -34,15 +34,32 @@ export default function TextInputComponent({
           {!touched && value === "" ? label + "..." : label}
         </label>
 
+        <input
+          onFocus={() => {
+            setTouched(true);
+          }}
+          type={
+            showPassword
+              ? "text"
+              : type === "password" && !showPassword
+              ? "password"
+              : "text"
+          }
+          name={partnerName}
+          className="bg-white h-full text-black p-4 rounded"
+          onChange={onChange}
+          value={value}
+          autoComplete={`${type === "password" && "current-password"}`}
+        />
         {type === "password" && (
           <button
             onClick={() => {
               setShowPassword((prev) => !prev);
             }}
-            className="absolute h-full w-full flex justify-end items-center pr-4 "
+            className="absolute inset-y-0 right-3"
           >
             {showPassword ? (
-              <p className="text-xl text-black text-center">X {' '}</p>
+              <p className="text-xl text-black text-center">X </p>
             ) : (
               <svg
                 width="30"
@@ -54,31 +71,20 @@ export default function TextInputComponent({
                 <path
                   d="M5 87C62.9019 33.1362 120.263 31.5363 176 87"
                   stroke="black"
-                  stroke-width="6"
-                  stroke-linecap="round"
+                  strokeWidth="6"
+                  strokeLinecap="round"
                 />
                 <path
                   d="M6 88C63.2247 141.864 119.915 143.464 175 88"
                   stroke="black"
-                  stroke-width="6"
-                  stroke-linecap="round"
+                  strokeWidth="6"
+                  strokeLinecap="round"
                 />
                 <circle cx="90" cy="87" r="41" fill="black" />
               </svg>
             )}
           </button>
         )}
-        <input
-          onFocus={() => {
-            setTouched(true);
-          }}
-          type={showPassword ? 'text' : type === 'password' && !showPassword ? 'password' : 'text'}
-          name={partnerName}
-          className="bg-white h-full text-black p-4 rounded"
-          onChange={onChange}
-          value={value}
-          autoComplete={`${type === "password" && "current-password"}`}
-        />
       </div>
       {validation !== "" && touched && (
         <p className="text-red-600 text-sm">{validation}</p>
