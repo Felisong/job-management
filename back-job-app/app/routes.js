@@ -283,4 +283,12 @@ router.get("/query-jobs/:query", async (req, res) => {
   }
 });
 
+// ======== USER AUTHENTICATIONA AND SIGN IN =================
+router.post("/create-user", async (req, res) => {
+  console.log(`body: `, req.body);
+
+  res.status(200).json({success: true, message: "Created User!"})
+})
+
+
 module.exports = router;
