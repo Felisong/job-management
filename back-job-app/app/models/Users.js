@@ -8,7 +8,9 @@ const UserSchema = new mongoose.Schema(
     validated: {type: Boolean, required: true},
     createdAt: {type: Date, required: true}
   },
-  { collection: "users" }
+  { collection: "users",
+    versionKey: false
+   }
 );
 
 const Users = mongoose.model("users", UserSchema);

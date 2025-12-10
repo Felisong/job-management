@@ -291,14 +291,19 @@ router.post("/create-user", async (req, res) => {
 
   try {
     const result = await UserAuthentication.createUser(userData);
+
     if (result.success) {
-      res.status(200).json({ success: true, message: "Created User!" });
+      res.status(200).json(result);
     } else {
       throw new Error(result.message);
     }
   } catch (err) {
     console.error(`Error in User Creation: `, err);
-    res.status(500).json({ success: false, message: "Error Creating User" });
+    if (String(err).includes("exists")){
+      res.status(409).json({success: false, message: err});
+    } else {
+       res.status(500).json({ success: false, message: "Error Creating User" });
+    }
   }
 });
 
