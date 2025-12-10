@@ -16,8 +16,7 @@ export default function SignInPage() {
   const [userValues, setUserValues] = useState<userValueModel>({
     email: "",
     password: "",
-    confirmPassword: "",
-    token: "",
+    confirmPassword: ""
   });
 
   function textChange(key: keyof userValueModel) {
@@ -32,15 +31,14 @@ export default function SignInPage() {
     setUserValues({
       email: "",
       password: "",
-      confirmPassword: "",
-      token: "",
+      confirmPassword: ""
     });
   }
 
-  async function handleSubmit(type: string) {
+  async function handleSubmit() {
       console.log(`meow??`);
       let result = {};
-      if (type === "register") {
+      if (isRegistering) {
         result = await CreateUser(userValues);
       } else {
         result = await SignInUser(userValues);
@@ -48,7 +46,7 @@ export default function SignInPage() {
       console.log(`result: `, result);
       // add value to userContext so user stays signed in.
       // reroute to user Dashboard where there I check if the user is signed in
-      
+
   };
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
@@ -100,8 +98,7 @@ export default function SignInPage() {
         onClick={(e) => {
           e.preventDefault();
           console.log(`CLICKED!`)
-          const action = isRegistering ? "register" : "sign-in";
-          handleSubmit(action);
+          handleSubmit();
         }}
         className="text-xl py-4"
       >

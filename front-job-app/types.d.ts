@@ -12,13 +12,14 @@ export interface userValueModel {
   email: string;
   password: string;
   confirmPassword: string;
-  token: string;
 }
 // user data model for the context
 export interface userDataModel {
   user_id: string;
   user_token: string;
   user_role: string;
+  token_expiration: string;
+  validated: boolean
 }
 // export interface resumeDataModel {
 //   first_name: string;
