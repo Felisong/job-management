@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const JobInfo = require("./models/JobInformationModel");
 const mongoose = require("mongoose");
+// controller
+const UserAuthentication = require("./controller/UserAuthentication");
 
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
@@ -43,7 +45,7 @@ router.get("/jobs", async (req, res) => {
         .limit(limit),
       JobInfo.countDocuments({}),
     ]);
-    console.log(`total `, total)
+    console.log(`total `, total);
 
     const hasMore = jobs.length === limit;
     const nextJobId = hasMore ? jobs[jobs.length - 1]._id : null;
@@ -53,7 +55,7 @@ router.get("/jobs", async (req, res) => {
       jobs: jobs,
       message: "Successfully fetched job information",
       nextExpectedId: nextJobId,
-      total: total
+      total: total,
     });
   } catch (err) {
     console.error(`error in jobs fetch :`, err);
@@ -285,10 +287,19 @@ router.get("/query-jobs/:query", async (req, res) => {
 
 // ======== USER AUTHENTICATIONA AND SIGN IN =================
 router.post("/create-user", async (req, res) => {
-  console.log(`body: `, req.body);
+  const userData = req.body;
 
-  res.status(200).json({success: true, message: "Created User!"})
-})
-
+  try {
+    const result = await UserAuthentication.createUser(userData);
+    if (result.success) {
+      res.status(200).json({ success: true, message: "Created User!" });
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (err) {
+    console.error(`Error in User Creation: `, err);
+    res.status(500).json({ success: false, message: "Error Creating User" });
+  }
+});
 
 module.exports = router;
