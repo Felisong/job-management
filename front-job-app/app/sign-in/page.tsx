@@ -62,6 +62,7 @@ export default function SignInPage() {
     }
     if (!result.success) throw new Error(result.message);
     // update user context and sign in.
+    // SET TOKEN IN COOKIE HERE
     userData.updateUser(result.userData);
     toast.triggerToast({message: 'Successfully created user, rerouting...', isError: false, showToast: true});
     setTimeout(() => {
@@ -71,9 +72,8 @@ export default function SignInPage() {
    } catch (err: unknown){
     toast.triggerToast({message: `${err}`, isError: true, showToast: true})
    }
-    // add value to userContext so user stays signed in.
-    // reroute to user Dashboard where there I check if the user is signed in
   }
+  console.log(`user: `, userData.userData)
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
       <h1 className="text-lg">Sign In</h1>
