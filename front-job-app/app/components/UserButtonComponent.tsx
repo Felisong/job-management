@@ -17,7 +17,7 @@ export default function UserButtonComponent({
   const [list, setList] = useState<{ label: string; value: string }[]>([
     { label: "Sign In / Register", value: "sign-in" },
     { label: "Sign out", value: "sign-out" },
-    
+
   ]);
   return (
     <>
@@ -78,6 +78,7 @@ export default function UserButtonComponent({
                 onClick={(e) => {
                   e.preventDefault();
                   route.push(`/${option.value}`);
+                  setShowDropDown(false);
                 }}
               >
                 {option.label}

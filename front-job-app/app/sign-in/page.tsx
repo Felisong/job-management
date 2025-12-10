@@ -7,19 +7,17 @@ import {
   isMatchingPassword,
   isValidPassword,
 } from "../utils/validation";
-import BasicButtonComponent from "../components/BasicButtonComponent";
-interface userValueModel {
-  username: string;
-  password: string;
-  confirmPassword: string;
-}
+import type { userValueModel } from "@/types";
+import { CreateUser } from "../actions/CreateUser";
+import { SignInUser } from "../actions/SignInUser";
 
 export default function SignInPage() {
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
   const [userValues, setUserValues] = useState<userValueModel>({
-    username: "",
+    email: "",
     password: "",
     confirmPassword: "",
+    token: "",
   });
 
   function textChange(key: keyof userValueModel) {
@@ -32,29 +30,36 @@ export default function SignInPage() {
     e.preventDefault();
     setIsRegistering((prev) => !prev);
     setUserValues({
-      username: "",
+      email: "",
       password: "",
       confirmPassword: "",
+      token: "",
     });
   }
 
-  function handleSubmit(type: string) {
-    return (e: MouseEvent) => {
-      const action = type === "" ? "" : "";
-      e.preventDefault();
-      // handle sign in or registration submit
-    };
-  }
+  async function handleSubmit(type: string) {
+      console.log(`meow??`);
+      let result = {};
+      if (type === "register") {
+        result = await CreateUser(userValues);
+      } else {
+        result = await SignInUser(userValues);
+      }
+      console.log(`result: `, result);
+      // add value to userContext so user stays signed in.
+      // reroute to user Dashboard where there I check if the user is signed in
+      
+  };
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
       <h1 className="text-lg">Sign In</h1>
       {isRegistering ? (
         <>
           <TextInputComponent
-            label="Username"
-            onChange={textChange("username")}
-            value={userValues.username}
-            validation={isFieldEmpty(userValues.username, "username")}
+            label="email"
+            onChange={textChange("email")}
+            value={userValues.email}
+            validation={isFieldEmpty(userValues.email, "email")}
           />
           <TextInputComponent
             label="Password"
@@ -78,26 +83,31 @@ export default function SignInPage() {
         <>
           <TextInputComponent
             label="Username"
-            onChange={textChange("username")}
-            value={userValues.username}
-            validation={isFieldEmpty(userValues.username, "username")}
+            onChange={textChange("email")}
+            value={userValues.email}
+            validation={isFieldEmpty(userValues.email, "email")}
           />
           <TextInputComponent
             label="Password"
             onChange={textChange("password")}
             value={userValues.password}
-            validation={isValidPassword(userValues.username)}
+            validation={isValidPassword(userValues.password)}
             type="password"
           />
         </>
       )}
-      <BasicButtonComponent
-        classes="text-xl py-4"
-        label={isRegistering ? "Register" : "Sign In"}
-        action={
-          isRegistering ? handleSubmit("register") : handleSubmit("sign-in")
-        }
-      />
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          console.log(`CLICKED!`)
+          const action = isRegistering ? "register" : "sign-in";
+          handleSubmit(action);
+        }}
+        className="text-xl py-4"
+      >
+        {isRegistering ? "Register" : "Sign In"}
+      </button>
+
       <button onClick={handleSwitch}>
         {isRegistering
           ? "Click here to sign in."

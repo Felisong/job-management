@@ -108,7 +108,7 @@ export default function JobDisplayList({
                 />
                 <BasicButtonComponent
                   label="View"
-                  action={handleRedirect(job._id, true)}
+                  action={handleRedirect(job._id, false)}
                 />
               </div>
               {!isLastItem ? <hr /> : null}
