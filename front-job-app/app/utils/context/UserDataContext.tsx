@@ -9,7 +9,7 @@ type userContext = {
 };
 const userDataContext = createContext<userContext | undefined>(undefined);
 
-export const UserValuesProvider = ({ children }: { children: ReactNode }) => {
+export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<userDataModel>({
     user_id: "",
     user_token: "",

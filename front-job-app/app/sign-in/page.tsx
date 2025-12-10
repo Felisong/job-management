@@ -7,16 +7,22 @@ import {
   isMatchingPassword,
   isValidPassword,
 } from "../utils/validation";
-import type { userValueModel } from "@/types";
+import type { userDataModel, userValueModel } from "@/types";
 import { CreateUser } from "../actions/CreateUser";
 import { SignInUser } from "../actions/SignInUser";
+import { useUser } from "../utils/context/UserDataContext";
+import { useToast } from "../utils/context/ShowToastContext";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+  const userData = useUser();
+  const toast = useToast();
+  const router = useRouter();
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
   const [userValues, setUserValues] = useState<userValueModel>({
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   function textChange(key: keyof userValueModel) {
@@ -31,23 +37,43 @@ export default function SignInPage() {
     setUserValues({
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
     });
   }
 
   async function handleSubmit() {
-      console.log(`meow??`);
-      let result = {};
-      if (isRegistering) {
-        result = await CreateUser(userValues);
-      } else {
-        result = await SignInUser(userValues);
-      }
-      console.log(`result: `, result);
-      // add value to userContext so user stays signed in.
-      // reroute to user Dashboard where there I check if the user is signed in
-
-  };
+    let result: { success: boolean; message: string; userData: userDataModel } =
+      {
+        success: false,
+        message: "",
+        userData: {
+          user_id: "",
+          user_token: "",
+          user_role: "",
+          token_expiration: "",
+          validated: false,
+        },
+      };
+   try {
+     if (isRegistering) {
+      result = await CreateUser(userValues);
+    } else {
+      // result = await SignInUser(userValues);
+    }
+    if (!result.success) throw new Error(result.message);
+    // update user context and sign in.
+    userData.updateUser(result.userData);
+    toast.triggerToast({message: 'Successfully created user, rerouting...', isError: false, showToast: true});
+    setTimeout(() => {
+      const userId = result.userData.user_id;
+      router.push(`/dashboard/${userId}`);
+    }, 1500)
+   } catch (err: unknown){
+    toast.triggerToast({message: `${err}`, isError: true, showToast: true})
+   }
+    // add value to userContext so user stays signed in.
+    // reroute to user Dashboard where there I check if the user is signed in
+  }
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
       <h1 className="text-lg">Sign In</h1>
@@ -97,7 +123,7 @@ export default function SignInPage() {
       <button
         onClick={(e) => {
           e.preventDefault();
-          console.log(`CLICKED!`)
+          console.log(`CLICKED!`);
           handleSubmit();
         }}
         className="text-xl py-4"

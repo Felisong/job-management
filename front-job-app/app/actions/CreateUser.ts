@@ -20,12 +20,8 @@ export async function CreateUser(userInfo: userValueModel) {
       throw new Error(`Failed to connect to API`);
     }
     const data = await res.json();
-    console.log(`fetch success: `, data)
     if (data.success) {
-      return {
-        success: true,
-        message: "Successfully created job.",
-      };
+      return data;
     } else {
       throw new Error(data.message);
     }

@@ -25,6 +25,7 @@ export async function SignInUser(userInfo: userValueModel) {
       return {
         success: true,
         message: "Meow.",
+        validated: ''
       };
     // } else {
     //   throw new Error(data.message);

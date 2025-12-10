@@ -7,6 +7,7 @@ import { ModalProvider } from "./utils/context/AddModalContext";
 import CreateJobModal from "./components/CreateJobModal";
 import { ShowToastProvider } from "./utils/context/ShowToastContext";
 import ToastComponent from "./components/ToastComponent";
+import { UserDataProvider } from "./utils/context/UserDataContext";
 
 const arimo = Arimo({
   weight: "400",
@@ -35,14 +36,16 @@ export default function RootLayout({
         className={`${arimo.variable} ${jura.variable} antialiased h-full relative`}
       >
         <ModalProvider>
-          <Header />
-          <ShowToastProvider>
-            <ToastComponent />
-            <CreateJobModal />
+          <UserDataProvider>
+            <Header />
+            <ShowToastProvider>
+              <ToastComponent />
+              <CreateJobModal />
 
-            {children}
-          </ShowToastProvider>
-          <Footer />
+              {children}
+            </ShowToastProvider>
+            <Footer />
+          </UserDataProvider>
         </ModalProvider>
       </body>
     </html>
