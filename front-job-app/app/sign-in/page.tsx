@@ -77,20 +77,17 @@ export default function SignInPage() {
    }
   }
 
-  useEffect(() => {
-    userData.refreshUser();
-  }, [])
-  
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
       <h1 className="text-lg">Sign In</h1>
       {isRegistering ? (
         <>
           <TextInputComponent
-            label="email"
+            label="Email"
             onChange={textChange("email")}
             value={userValues.email}
             validation={isFieldEmpty(userValues.email, "email")}
+            type="email"
           />
           <TextInputComponent
             label="Password"
@@ -113,10 +110,11 @@ export default function SignInPage() {
       ) : (
         <>
           <TextInputComponent
-            label="Username"
+            label="Email"
             onChange={textChange("email")}
             value={userValues.email}
             validation={isFieldEmpty(userValues.email, "email")}
+            type="email"
           />
           <TextInputComponent
             label="Password"

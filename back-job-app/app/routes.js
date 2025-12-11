@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const JobInfo = require("./models/JobInformationModel");
+const Users = require("./models/Users");
+
 const mongoose = require("mongoose");
 // controller
 const UserAuthentication = require("./controller/UserAuthentication");
 const { authenticateToken } = require("./middleware/auth");
-const Users = require("./models/Users");
 
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
@@ -341,5 +342,23 @@ router.get("/user/me", authenticateToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Error fetching user." });
   }
 });
+router.put("/user/sign-in", async (req, res) => {
+  try{
+    const result = await UserAuthentication.signInUser(req.body);
+    
+    if (result.success){
+       res.status(200).json(result);
+    } else if (result.statusCode){
+      res.status(400).json(result);
+    }
+   
+  } catch (err){
+    console.error('Error in user sign in' + err);
+    res.status(500).json({
+      success: false,
+      message: "Error: " + err
+    })
+  }
+})
 
 module.exports = router;

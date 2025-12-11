@@ -8,6 +8,7 @@ import CreateJobModal from "./components/CreateJobModal";
 import { ShowToastProvider } from "./utils/context/ShowToastContext";
 import ToastComponent from "./components/ToastComponent";
 import { UserDataProvider } from "./utils/context/UserDataContext";
+import UserRefresher from "./components/utils/UserRefresher";
 
 const arimo = Arimo({
   weight: "400",
@@ -39,6 +40,7 @@ export default function RootLayout({
           <UserDataProvider>
             <Header />
             <ShowToastProvider>
+              <UserRefresher />
               <ToastComponent />
               <CreateJobModal />
 
