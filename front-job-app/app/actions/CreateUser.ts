@@ -8,7 +8,6 @@ const baseUrl =
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 export async function CreateUser(userInfo: userValueModel) {
   try {
-    console.log(`ello?? `)
     const res = await fetch(baseUrl + `/create-user`, {
       method: "POST",
       headers: {

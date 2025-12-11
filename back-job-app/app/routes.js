@@ -4,6 +4,8 @@ const JobInfo = require("./models/JobInformationModel");
 const mongoose = require("mongoose");
 // controller
 const UserAuthentication = require("./controller/UserAuthentication");
+const { authenticateToken } = require("./middleware/auth");
+const Users = require("./models/Users");
 
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
@@ -299,11 +301,45 @@ router.post("/create-user", async (req, res) => {
     }
   } catch (err) {
     console.error(`Error in User Creation: `, err);
-    if (String(err).includes("exists")){
-      res.status(409).json({success: false, message: err});
+    if (String(err).includes("exists")) {
+      res.status(409).json({ success: false, message: err });
     } else {
-       res.status(500).json({ success: false, message: "Error Creating User" });
+      res.status(500).json({ success: false, message: "Error Creating User" });
     }
+  }
+});
+router.get("/user/me", authenticateToken, async (req, res) => {
+  try {
+    const userData = req.user;
+    console.log(`user data: `, userData)
+    const authHeader = req.headers["authorization"];
+    const token = authHeader ? authHeader.split(" ")[1] : null;
+    
+    const userRes = await Users.findOne({
+      _id: new mongoose.Types.ObjectId(userData.user_id),
+    });
+
+    // if token is expired...
+    const tokenExpiryDate = new Date(userData.exp * 1000);
+    const isExpired = new Date() > tokenExpiryDate;
+    if (isExpired) return res.status(401).json({success: true, message: "Token Expired"});
+
+    const user = {
+      user_id: userData.user_id,
+      user_token: token,
+      user_role: userRes.userRole,
+      token_expiration: "7d",
+      validated: userRes.validated,
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully got user",
+      userData: user,
+    });
+  } catch (err) {
+    console.error("Error in User Authentication: ", err);
+    res.status(500).json({ success: false, message: "Error fetching user." });
   }
 });
 

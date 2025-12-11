@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import TextInputComponent from "../components/TextInputComponent";
 import {
   isFieldEmpty,
@@ -13,6 +13,8 @@ import { SignInUser } from "../actions/SignInUser";
 import { useUser } from "../utils/context/UserDataContext";
 import { useToast } from "../utils/context/ShowToastContext";
 import { useRouter } from "next/navigation";
+import { setAuthToken } from "../utils/cookies";
+
 
 export default function SignInPage() {
   const userData = useUser();
@@ -61,9 +63,10 @@ export default function SignInPage() {
       // result = await SignInUser(userValues);
     }
     if (!result.success) throw new Error(result.message);
-    // update user context and sign in.
-    // SET TOKEN IN COOKIE HERE
-    userData.updateUser(result.userData);
+    // sets token as soon as it succeeds
+    setAuthToken(result.userData.user_token);
+    // immediately updates userData for immediate use
+    userData.updateUser(result.userData)
     toast.triggerToast({message: 'Successfully created user, rerouting...', isError: false, showToast: true});
     setTimeout(() => {
       const userId = result.userData.user_id;
@@ -73,7 +76,12 @@ export default function SignInPage() {
     toast.triggerToast({message: `${err}`, isError: true, showToast: true})
    }
   }
-  console.log(`user: `, userData.userData)
+
+  useEffect(() => {
+    userData.refreshUser();
+
+  }, [])
+   console.log(`check: `, userData.userData);
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
       <h1 className="text-lg">Sign In</h1>
