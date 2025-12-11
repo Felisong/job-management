@@ -60,7 +60,7 @@ export default function SignInPage() {
      if (isRegistering) {
       result = await CreateUser(userValues);
     } else {
-      // result = await SignInUser(userValues);
+      result = await SignInUser(userValues);
     }
     if (!result.success) throw new Error(result.message);
     // sets token as soon as it succeeds
@@ -79,9 +79,8 @@ export default function SignInPage() {
 
   useEffect(() => {
     userData.refreshUser();
-
   }, [])
-   console.log(`check: `, userData.userData);
+  
   return (
     <div className="p-4 h-fit py-4 flex flex-col">
       <h1 className="text-lg">Sign In</h1>
@@ -131,7 +130,6 @@ export default function SignInPage() {
       <button
         onClick={(e) => {
           e.preventDefault();
-          console.log(`CLICKED!`);
           handleSubmit();
         }}
         className="text-xl py-4"

@@ -28,6 +28,13 @@ export async function CreateUser(userInfo: userValueModel) {
     return {
       success: false,
       message: `failed to create job: ` + err,
+      userData: {
+        user_id: "",
+        user_token: "",
+        user_role: "",
+        token_expiration: "",
+        validated: false,
+      },
     };
   }
 }

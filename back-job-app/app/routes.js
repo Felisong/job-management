@@ -47,7 +47,6 @@ router.get("/jobs", async (req, res) => {
         .limit(limit),
       JobInfo.countDocuments({}),
     ]);
-    console.log(`total `, total);
 
     const hasMore = jobs.length === limit;
     const nextJobId = hasMore ? jobs[jobs.length - 1]._id : null;
@@ -308,10 +307,10 @@ router.post("/create-user", async (req, res) => {
     }
   }
 });
+// checks if user is signed in or not
 router.get("/user/me", authenticateToken, async (req, res) => {
   try {
     const userData = req.user;
-    console.log(`user data: `, userData)
     const authHeader = req.headers["authorization"];
     const token = authHeader ? authHeader.split(" ")[1] : null;
     

@@ -34,10 +34,9 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
     setUserData(value);
     setAuthToken(value.user_token);
   };
-  // on load get user token if it exists and update user.
+
   const refreshUser = async () => {
     const token = getAuthToken();
-    console.log(`token: `, token);
     if (!token) return;
     try {
       const user = await FetchUserData(token);
@@ -47,11 +46,10 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       if (user.success) {      
         updateUser(user.userData);
       } else {
-        removeAuthToken();
         throw new Error("Error: ", user.message);
       }
     } catch (err: unknown) {
-      console.error("Error fetching user: ", err);
+      console.error(err);
       // showtoast if I want to let the user know their token is bogues
       removeAuthToken();
     } 
