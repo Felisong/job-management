@@ -63,7 +63,6 @@ class UserAuthentication {
           statusCode: 400,
         };
       }
-      console.log(`match works: `, match)
       const isValid = bcrypt.compareSync(password, match.password);
       if (!isValid) {
         return {
@@ -84,7 +83,6 @@ class UserAuthentication {
         { expiresIn: "7d" }
       );
 
-      console.log(`isValid: `, isValid)
 
       return {
         success: true,

@@ -12,7 +12,8 @@ export async function FetchUserData(token: string) {
       },
       method: "GET",
     });
-    if (!response.ok) throw new Error("Failed to fetch user data.");
+
+    if (!response.ok && response.status !== 401) throw new Error("Failed to fetch user data.");
     return await response.json();
   } catch (err: unknown) {
     console.error(`Error in auth: `, err)

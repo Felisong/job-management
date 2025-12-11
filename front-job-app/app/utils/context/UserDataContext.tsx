@@ -13,7 +13,6 @@ import { FetchUserData } from "@/app/actions/FetchUserData";
 
 type userContext = {
   userData: userDataModel;
-  updateUser: (data: userDataModel) => void;
   clearUser: () => void;
   refreshUser: () => Promise<void>;
 };
@@ -21,30 +20,29 @@ type userContext = {
 const userDataContext = createContext<userContext | undefined>(undefined);
 const defaultUserData: userDataModel = {
   user_id: "",
-  user_token: "",
   user_role: "",
-  token_expiration: "",
   validated: false,
 };
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<userDataModel>(defaultUserData);
 
-  const updateUser = (value: userDataModel) => {
+  const updateUser = (value: userDataModel, token: string) => {
     setUserData(value);
-    setAuthToken(value.user_token);
+    setAuthToken(token);
   };
 
   const refreshUser = async () => {
     const token = getAuthToken();
     if (!token) return;
+
     try {
       const user = await FetchUserData(token);
-      if (!user.userData) {
+      if (!user.userData && user.success) {
           throw new Error('Token timed out, please sign in again.')
         }
       if (user.success) {      
-        updateUser(user.userData);
+        updateUser(user.userData, token);
       } else {
         throw new Error("Error: ", user.message);
       }
@@ -61,7 +59,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <userDataContext.Provider value={{ userData, updateUser, clearUser, refreshUser }}>
+    <userDataContext.Provider value={{ userData, clearUser, refreshUser }}>
       {children}
     </userDataContext.Provider>
   );

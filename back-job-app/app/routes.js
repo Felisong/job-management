@@ -312,8 +312,6 @@ router.post("/create-user", async (req, res) => {
 router.get("/user/me", authenticateToken, async (req, res) => {
   try {
     const userData = req.user;
-    const authHeader = req.headers["authorization"];
-    const token = authHeader ? authHeader.split(" ")[1] : null;
     
     const userRes = await Users.findOne({
       _id: new mongoose.Types.ObjectId(userData.user_id),
@@ -326,9 +324,7 @@ router.get("/user/me", authenticateToken, async (req, res) => {
 
     const user = {
       user_id: userData.user_id,
-      user_token: token,
       user_role: userRes.userRole,
-      token_expiration: "7d",
       validated: userRes.validated,
     };
 

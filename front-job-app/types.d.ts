@@ -16,9 +16,7 @@ export interface userValueModel {
 // user data model for the context
 export interface userDataModel {
   user_id: string;
-  user_token: string;
   user_role: string;
-  token_expiration: string;
   validated: boolean
 }
 // export interface resumeDataModel {
