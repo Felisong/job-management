@@ -26,6 +26,7 @@ const defaultUserData: userDataModel = {
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<userDataModel>(defaultUserData);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const updateUser = (value: userDataModel, token: string) => {
     setUserData(value);

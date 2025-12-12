@@ -15,5 +15,5 @@ export function getAuthToken(): string | null {
 }
 
 export function removeAuthToken(){
-    document.cookie = "user_token=; maxage=0; path=/"
+    document.cookie = "user-token=; maxage=0; path=/"
 }

@@ -15,7 +15,6 @@ import { useToast } from "../utils/context/ShowToastContext";
 import { useRouter } from "next/navigation";
 import { setAuthToken } from "../utils/cookies";
 
-
 export default function SignInPage() {
   const userData = useUser();
   const toast = useToast();
@@ -44,37 +43,47 @@ export default function SignInPage() {
   }
 
   async function handleSubmit() {
-    let result: { success: boolean; message: string; userData: userDataModel } =
-      {
-        success: false,
-        message: "",
-        userData: {
-          user_id: "",
-          user_token: "",
-          user_role: "",
-          token_expiration: "",
-          validated: false,
-        },
+    let result: {
+      success: boolean;
+      message: string;
+      userData: userDataModel & {
+        user_token: string;
+        token_expiration: string;
       };
-   try {
-     if (isRegistering) {
-      result = await CreateUser(userValues);
-    } else {
-      result = await SignInUser(userValues);
+    } = {
+      success: false,
+      message: "",
+      userData: {
+        user_id: "",
+        user_token: "",
+        user_role: "",
+        token_expiration: "",
+        validated: false,
+      },
+    };
+    try {
+      if (isRegistering) {
+        result = await CreateUser(userValues);
+      } else {
+        result = await SignInUser(userValues);
+      }
+      if (!result.success) throw new Error(result.message);
+      // sets token as soon as it succeeds
+      setAuthToken(result.userData.user_token);
+      // immediately updates userData for immediate use
+      userData.refreshUser();
+      toast.triggerToast({
+        message: "Successfully created user, rerouting...",
+        isError: false,
+        showToast: true,
+      });
+      setTimeout(() => {
+        const userId = result.userData.user_id;
+        router.push(`/dashboard/${userId}`);
+      }, 1500);
+    } catch (err: unknown) {
+      toast.triggerToast({ message: `${err}`, isError: true, showToast: true });
     }
-    if (!result.success) throw new Error(result.message);
-    // sets token as soon as it succeeds
-    setAuthToken(result.userData.user_token);
-    // immediately updates userData for immediate use
-    userData.updateUser(result.userData)
-    toast.triggerToast({message: 'Successfully created user, rerouting...', isError: false, showToast: true});
-    setTimeout(() => {
-      const userId = result.userData.user_id;
-      router.push(`/dashboard/${userId}`);
-    }, 1500)
-   } catch (err: unknown){
-    toast.triggerToast({message: `${err}`, isError: true, showToast: true})
-   }
   }
 
   return (

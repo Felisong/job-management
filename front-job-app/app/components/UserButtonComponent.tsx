@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "../utils/context/UserDataContext";
 
 export default function UserButtonComponent({
   w = 100,
@@ -11,14 +12,25 @@ export default function UserButtonComponent({
   w: number;
   h: number;
 }) {
+  const user = useUser();
   // code here
   const route = useRouter();
   const [showDropdown, setShowDropDown] = useState<boolean>(false);
   const [list, setList] = useState<{ label: string; value: string }[]>([
     { label: "Sign In / Register", value: "sign-in" },
-    { label: "Sign out", value: "sign-out" },
-
   ]);
+
+  useEffect(() => {
+    const u = user.userData;
+    if (u.user_id !== "") {
+      setList([
+        { label: "User Dashboard", value: `dashboard/${u.user_id}` },
+        { label: "Sign Out", value: "sign-out" },
+      ]);
+    } else {
+      setList([{ label: "Sign In / Register", value: "sign-in" }]);
+    }
+  }, [user.userData]);
   return (
     <>
       <button
@@ -70,18 +82,23 @@ export default function UserButtonComponent({
         <div
           className={`absolute left-0 top-[100%] w-full z-1 bg-secondary-backdrop flex flex-col`}
         >
-          {list.map((option, i) => (
-            <div key={option.value}>
+          {list.map(({ label, value }, i) => (
+            <div key={value}>
               {i === 0 && <hr></hr>}
               <button
-                className="text-xl"
+                className="text-xl border-box p-4"
                 onClick={(e) => {
                   e.preventDefault();
-                  route.push(`/${option.value}`);
+                  if (value === "sign-out") {
+                    user.clearUser();
+                    user.refreshUser();
+                  } else {
+                    route.push(`/${value}`);
+                  }
                   setShowDropDown(false);
                 }}
               >
-                {option.label}
+                {label}
               </button>
               <hr />
             </div>
