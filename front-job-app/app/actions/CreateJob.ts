@@ -15,7 +15,6 @@ export async function CreateJob(job: JobInformationModel) {
       },
       body: JSON.stringify(job),
     });
-    // console.log(`create job response: `, res)
 
     if (!res.ok) {
       throw new Error(`Failed to connect to API`);

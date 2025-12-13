@@ -38,11 +38,11 @@ export default function ViewJob({
   async function fetchJob() {
     try {
       setLoading(true);
-      const res = await FetchJob(parameters.id);
+      const res = await FetchJob(parameters.id, user.userData.user_id);
       if (res.success) {
         setJob({ ...job, ...res.jobData });
       } else {
-        throw new Error("Unable to fetch job data");
+        throw new Error(res.message);
       }
     } catch (err: unknown) {
       toast.triggerToast({
@@ -81,7 +81,6 @@ export default function ViewJob({
     fetchJob();
     route.push(`/${job._id}/false`);
   }
-  // this fetches data before making sure the user is the real one...
 
   useEffect(() => {
     const token = getAuthToken();
@@ -106,7 +105,6 @@ export default function ViewJob({
     try {
       if (!user.userData.user_id) throw new Error("User not Signed in, cannot see jobs");
       fetchJob();
-      if (job.user_id !== user.userData.user_id) throw new Error("ID does not match job.");
     } catch (err: unknown) {
       toast.triggerToast({
         message: String(err),
@@ -118,7 +116,7 @@ export default function ViewJob({
       }, 1500);
     }
 
-  }, [parameters.id, job]);
+  }, [parameters.id]);
 
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {

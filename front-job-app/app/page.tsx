@@ -26,7 +26,6 @@ export default function Home() {
 
   async function fetchJobs() {
     try {
-      console.log(`fetch job triggering: `, user.userData.user_id)
       setLoading(true);
       const data = await FetchAllJobs(lastJobId, user.userData.user_id);
       setJobs((jobs: JobInformationModel[]) => [...jobs, ...data.jobs]);

@@ -4,9 +4,9 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export default async function FetchJob(jobId: string) {
+export default async function FetchJob(jobId: string, userId: string) {
   try {
-    const res = await fetch(baseUrl + `/job-info/${jobId}`, {
+    const res = await fetch(baseUrl + `/job-info/${jobId}/${userId}`, {
       method: "GET",
     });
     if (!res.ok) {
@@ -20,13 +20,13 @@ export default async function FetchJob(jobId: string) {
         jobData: data.jobData,
       };
     } else {
-      throw new Error("connected to API but failed to fetch information");
+      throw new Error(data.message);
     }
   } catch (err: unknown) {
     console.error(`error in fetching job: ` + err);
     return {
       success: false,
-      message: "failed to get job information",
+      message: "Error: ", err,
     };
   }
 }

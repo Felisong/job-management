@@ -85,8 +85,9 @@ router.get("/jobs", async (req, res) => {
   }
 });
 
-router.get("/job-info/:id", async (req, res) => {
+router.get("/job-info/:id/:userId", async (req, res) => {
   const jobId = req.params.id || "";
+  const userId = req.params.userId
 
   try {
     if (!jobId) throw new Error("Not a valid job ID");
@@ -95,6 +96,11 @@ router.get("/job-info/:id", async (req, res) => {
     if (!jobData.company) {
       throw new Error("Failed to fetch job but communicated with API");
     }
+
+    if (jobData.user_id !== jobData.user_id){
+      throw new Error("User ID does not match this job.")
+    }
+    
     res.status(200).json({
       success: true,
       message: "fetched job information successfully.",
