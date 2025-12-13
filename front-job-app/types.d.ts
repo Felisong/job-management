@@ -6,6 +6,7 @@ export interface JobInformationModel {
   state: string;
   job_description?: string;
   other?: string;
+  user_id: string;
 }
 
 export interface userValueModel {

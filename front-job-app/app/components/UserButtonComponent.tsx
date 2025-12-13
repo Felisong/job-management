@@ -92,6 +92,7 @@ export default function UserButtonComponent({
                   if (value === "sign-out") {
                     user.clearUser();
                     user.refreshUser();
+                    window.location.href = "/";
                   } else {
                     route.push(`/${value}`);
                   }

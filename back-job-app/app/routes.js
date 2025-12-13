@@ -15,8 +15,23 @@ router.get("/users", (req, res) => {
 // all job related API's
 router.post("/create-job", async (req, res) => {
   try {
-    const { _id, ...body } = req.body;
-    const create = await JobInfo.insertOne(body);
+    const { company, job_title, date_sent, state, job_description, other, user_id } = req.body;
+    const userIdObj = new mongoose.Types.ObjectId(user_id); 
+    if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
+      return res.status(400).json*{
+        success: false,
+        message: "Invalid user ID"
+      }
+    }
+    const create = await JobInfo.insertOne({
+      company,
+      job_title,
+      date_sent,
+      state,
+      job_description,
+      other,
+      user_id: userIdObj
+    });
 
     if (create._id) {
       res
@@ -26,6 +41,7 @@ router.post("/create-job", async (req, res) => {
       throw new Error(`Communicated with server but failed to create entry`);
     }
   } catch (err) {
+    console.error(`Error in create jobs: `, err)
     res
       .status(500)
       .json({ success: false, message: "Error in create-job: " + err });
@@ -36,10 +52,14 @@ router.get("/jobs", async (req, res) => {
     // I'll have to change this later to take in a user id if I want to add that functionality.
     const limit = 25;
     const lastJobId = req.query.lastJobId ? req.query.lastJobId : null;
+    const userId = req.query.userId ? req.query.userId : null;
 
     let query = lastJobId
-      ? { _id: { $lt: new mongoose.Types.ObjectId(lastJobId) } }
-      : {};
+      ? {
+          _id: { $lt: new mongoose.Types.ObjectId(lastJobId) },
+          user_id: new mongoose.Types.ObjectId(userId),
+        }
+      : { user_id: new mongoose.Types.ObjectId(userId) };
 
     const [jobs, total] = await Promise.all([
       JobInfo.find(query)
@@ -126,9 +146,10 @@ router.put("/update-job", async (req, res) => {
   }
 });
 
-router.get("/query-jobs/:query", async (req, res) => {
+router.get("/query-jobs/:query/:userId", async (req, res) => {
   try {
     const incomingQueries = req.params.query;
+    const userId = req.params.userId || "";
     const queries = incomingQueries.split(" ").filter((q) => q.trim() !== "");
     const allConditions = [];
     // building the conditions for each query
@@ -158,6 +179,7 @@ router.get("/query-jobs/:query", async (req, res) => {
     }
 
     const results = await JobInfo.aggregate([
+      { $match: { user_id: new mongoose.Types.ObjectId(userId)}},
       { $match: { $or: allConditions } },
       {
         $addFields: {
@@ -312,7 +334,7 @@ router.post("/create-user", async (req, res) => {
 router.get("/user/me", authenticateToken, async (req, res) => {
   try {
     const userData = req.user;
-    
+
     const userRes = await Users.findOne({
       _id: new mongoose.Types.ObjectId(userData.user_id),
     });
@@ -320,7 +342,8 @@ router.get("/user/me", authenticateToken, async (req, res) => {
     // if token is expired...
     const tokenExpiryDate = new Date(userData.exp * 1000);
     const isExpired = new Date() > tokenExpiryDate;
-    if (isExpired) return res.status(401).json({success: true, message: "Token Expired"});
+    if (isExpired)
+      return res.status(401).json({ success: true, message: "Token Expired" });
 
     const user = {
       user_id: userData.user_id,
@@ -339,22 +362,21 @@ router.get("/user/me", authenticateToken, async (req, res) => {
   }
 });
 router.put("/user/sign-in", async (req, res) => {
-  try{
+  try {
     const result = await UserAuthentication.signInUser(req.body);
-    
-    if (result.success){
-       res.status(200).json(result);
-    } else if (result.statusCode){
+
+    if (result.success) {
+      res.status(200).json(result);
+    } else if (result.statusCode) {
       res.status(400).json(result);
     }
-   
-  } catch (err){
-    console.error('Error in user sign in' + err);
+  } catch (err) {
+    console.error("Error in user sign in" + err);
     res.status(500).json({
       success: false,
-      message: "Error: " + err
-    })
+      message: "Error: " + err,
+    });
   }
-})
+});
 
 module.exports = router;

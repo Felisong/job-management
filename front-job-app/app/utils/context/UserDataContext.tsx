@@ -15,6 +15,7 @@ type userContext = {
   userData: userDataModel;
   clearUser: () => void;
   refreshUser: () => Promise<void>;
+  initialized: boolean;
 };
 
 const userDataContext = createContext<userContext | undefined>(undefined);
@@ -26,16 +27,20 @@ const defaultUserData: userDataModel = {
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const [userData, setUserData] = useState<userDataModel>(defaultUserData);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   const updateUser = (value: userDataModel, token: string) => {
     setUserData(value);
     setAuthToken(token);
+    setInitialized(true);
   };
 
   const refreshUser = async () => {
     const token = getAuthToken();
-    if (!token) return;
+    if (!token) {
+      setInitialized(true);
+      return;
+    };
 
     try {
       const user = await FetchUserData(token);
@@ -57,10 +62,11 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
   const clearUser = () => {
     setUserData(defaultUserData);
     removeAuthToken();
+    setInitialized(true);
   };
 
   return (
-    <userDataContext.Provider value={{ userData, clearUser, refreshUser }}>
+    <userDataContext.Provider value={{ userData, clearUser, refreshUser, initialized }}>
       {children}
     </userDataContext.Provider>
   );

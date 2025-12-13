@@ -6,9 +6,12 @@ import JobDisplayList from "./components/JobDisplayList";
 import SearchAndFilters from "./components/SearchAndFilters";
 import FetchAllJobs from "./actions/FetchAllJobs";
 import { useModal } from "./utils/context/AddModalContext";
+import Link from "next/link";
+import { useUser } from "./utils/context/UserDataContext";
 
 export default function Home() {
   const { openModal } = useModal();
+  const user = useUser();
   const observerRef = useRef<HTMLDivElement>(null);
   const queryActiveRef = useRef(false);
   const hasFetchedRef = useRef(false);
@@ -23,8 +26,9 @@ export default function Home() {
 
   async function fetchJobs() {
     try {
+      console.log(`fetch job triggering: `, user.userData.user_id)
       setLoading(true);
-      const data = await FetchAllJobs(lastJobId);
+      const data = await FetchAllJobs(lastJobId, user.userData.user_id);
       setJobs((jobs: JobInformationModel[]) => [...jobs, ...data.jobs]);
       setHasMoreJobs(data.nextExpectedId ? true : false);
       setTotalResults(data.total);
@@ -32,26 +36,25 @@ export default function Home() {
       setInitialized(true);
     } catch (err: unknown) {
       console.error(`error fetching jobs: `, err);
-
       setErrMessage(`Failed fetching data: ` + err);
     } finally {
       setLoading(false);
     }
   }
   // set Jobs from inside components
-  function handleSetJobs(jobs: JobInformationModel[]) {
+  function handleSetJobs(j: JobInformationModel[]) {
     queryActiveRef.current = true;
-    setJobs(jobs);
-    setTotalResults(jobs.length);
+    setJobs(j);
+    setTotalResults(j.length);
   }
   // initial fetch
   useEffect(() => {
     if (queryActiveRef.current) return;
-    if (!hasFetchedRef.current) {
+    if (!hasFetchedRef.current && user.initialized) {
       hasFetchedRef.current = true;
       fetchJobs();
     }
-  }, []);
+  }, [user.initialized]);
   // loading more was we scroll down and get the invisible div on screen
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -74,17 +77,18 @@ export default function Home() {
   }, [hasMoreJobs, loading, initialized]);
 
   return (
-    <div className="p-4">
+    <div className="p-4 flex flex-col">
       <SearchAndFilters handleSetJobs={handleSetJobs} totalResults={totalResults}/>
-      <button className="mb-4 text-2xl" onClick={openModal}>
+     {user.userData.user_id && 
+      <button className="mb-4 text-2xl text-start" onClick={openModal}>
         Add new Job
-      </button>
-      {jobs.length > 0 && (
+      </button>}
+      {jobs.length > 0 ? (
         <div className="">
           <JobDisplayList jobs={jobs}></JobDisplayList>
           <div ref={observerRef}></div>
         </div>
-      )}
+      ) : user.userData.user_id !== '' ? <p>No applications to display</p>:(<a href={"/sign-in"}>Click here to Register</a>)}
       {loading && <p> loading...</p>}
     </div>
   );

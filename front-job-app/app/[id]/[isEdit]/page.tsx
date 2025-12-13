@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import Spinner from "@/app/components/utils/Spinner";
 import { DeleteJob } from "@/app/actions/DeleteJob";
 import { useToast } from "@/app/utils/context/ShowToastContext";
+import { useUser } from "@/app/utils/context/UserDataContext";
+import { getAuthToken } from "@/app/utils/cookies";
 
 export default function ViewJob({
   params,
@@ -17,6 +19,7 @@ export default function ViewJob({
 }) {
   const toast = useToast();
   const route = useRouter();
+  const user = useUser();
   // this has the job id, and isEdit inside to flag whether user is editing or not.
   const parameters = React.use(params) || {};
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,6 +32,7 @@ export default function ViewJob({
     state: "",
     job_description: "",
     other: "",
+    user_id: "",
   });
 
   async function fetchJob() {
@@ -41,7 +45,11 @@ export default function ViewJob({
         throw new Error("Unable to fetch job data");
       }
     } catch (err: unknown) {
-      toast.triggerToast({message: 'Error: ' + err, isError: true, showToast: true})
+      toast.triggerToast({
+        message: "Error: " + err,
+        isError: true,
+        showToast: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -51,12 +59,20 @@ export default function ViewJob({
   async function handleDeleteClick(jobId: string) {
     const req = await DeleteJob(jobId);
     if (req.success) {
-      toast.triggerToast({message: 'Successfully deleted job', isError: false, showToast: true})
+      toast.triggerToast({
+        message: "Successfully deleted job",
+        isError: false,
+        showToast: true,
+      });
       setTimeout(() => {
         route.push("/");
       }, 1500);
     } else {
-     toast.triggerToast({message: 'Error: ' + req.message, isError: true, showToast: true})
+      toast.triggerToast({
+        message: "Error: " + req.message,
+        isError: true,
+        showToast: true,
+      });
     }
   }
 
@@ -65,17 +81,44 @@ export default function ViewJob({
     fetchJob();
     route.push(`/${job._id}/false`);
   }
+  // this fetches data before making sure the user is the real one...
 
   useEffect(() => {
-    if (parameters.id) {
+    const token = getAuthToken();
+    if (parameters.id && token) {
       fetchJob();
     } else {
-      toast.triggerToast({message: 'Failed to get job, will direct home.', isError: true, showToast: true});
+      toast.triggerToast({
+        message: "Failed to get job, will direct home.",
+        isError: true,
+        showToast: true,
+      });
       setTimeout(() => {
         route.push("/");
-      })
+      }, 1500);
     }
   }, [parameters.id]);
+
+  // user check
+  useEffect(() => {
+    if (!user.initialized) return;
+
+    try {
+      if (!user.userData.user_id) throw new Error("User not Signed in, cannot see jobs");
+      fetchJob();
+      if (job.user_id !== user.userData.user_id) throw new Error("ID does not match job.");
+    } catch (err: unknown) {
+      toast.triggerToast({
+        message: String(err),
+        isError: true,
+        showToast: true,
+      });
+      setTimeout(() => {
+        route.push("/");
+      }, 1500);
+    }
+
+  }, [parameters.id, job]);
 
   // mini component to return which component to display depending on if the user is editing or not.
   function JobInfoLayout() {

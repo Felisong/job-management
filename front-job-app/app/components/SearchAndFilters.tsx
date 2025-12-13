@@ -3,6 +3,7 @@ import { useState } from "react";
 import { QueryJobs } from "../actions/QueryJobs";
 import { JobInformationModel } from "@/types";
 import { useToast } from "../utils/context/ShowToastContext";
+import { useUser } from "../utils/context/UserDataContext";
 
 export default function SearchAndFilters({
   handleSetJobs,
@@ -13,6 +14,7 @@ export default function SearchAndFilters({
 }) {
   const [query, setQuery] = useState<string>("");
   const toast = useToast();
+  const user = useUser();
   // handles the query state change
   function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
     setQuery(e.target.value);
@@ -26,7 +28,9 @@ export default function SearchAndFilters({
   ) {
     e.preventDefault();
     try {
-      const queryResult = await QueryJobs(query);
+      if (query.trim() === "") throw new Error("Please search a real value");
+      
+      const queryResult = await QueryJobs(query.trim(), user.userData.user_id);
       if (!queryResult.success) throw new Error("Failed to fetch from server");
 
       if (queryResult.jobs.length === 0) {
@@ -95,7 +99,7 @@ export default function SearchAndFilters({
           }}
         />
       </form>
-      <p>{totalResults} Results</p>
+      <p>{totalResults ? totalResults : 0} Results</p>
       {/* <button className="text-2xl">Filters</button> */}
     </div>
   );

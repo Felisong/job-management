@@ -11,10 +11,12 @@ import { isFieldEmpty, isRealDate } from "../utils/validation";
 import { CreateJob } from "../actions/CreateJob";
 import { useToast } from "../utils/context/ShowToastContext";
 import { useRouter } from "next/navigation";
+import { useUser } from "../utils/context/UserDataContext";
 
 export default function CreateJobModal() {
   const toast = useToast();
   const router = useRouter();
+  const {userData} = useUser();
   const { isOpen, closeModal } = useModal();
   const [formIsValid, setFormIsValid] = useState<boolean>(false);
   const d = new Date();
@@ -31,6 +33,7 @@ export default function CreateJobModal() {
     state: "awaiting_response",
     job_description: "",
     other: "",
+    user_id: userData.user_id ? userData.user_id : ""
   });
 
   // text state management
@@ -64,6 +67,7 @@ export default function CreateJobModal() {
           state: "awaiting_response",
           job_description: "",
           other: "",
+          user_id: userData.user_id
         });
         closeModal();
 
@@ -101,6 +105,7 @@ export default function CreateJobModal() {
         state: "awaiting_response",
         job_description: "",
         other: "",
+         user_id: userData.user_id ? userData.user_id : ""
       });
     }
   }, [isOpen]);

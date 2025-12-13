@@ -7,12 +7,15 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export default async function FetchAllJobs(lastJobId: string) {
+export default async function FetchAllJobs(lastJobId: string, userId: string) {
   try {
+    // last jobId and ser Id are needed here.
+    if (userId === "") return {success: true, message: 'User has no account.', jobs: []};
+
     let jobsList : JobInformationModel[] = [];
     const url = lastJobId
-      ? `${baseUrl}/jobs?lastJobId=${lastJobId}`
-      : `${baseUrl}/jobs`;
+      ? `${baseUrl}/jobs?lastJobId=${lastJobId}&userId=${userId}`
+      : `${baseUrl}/jobs?userId=${userId}`;
     const res = await fetch(url);
     if (!res.ok) {
       throw new Error(`Unable to fetch from API`);
