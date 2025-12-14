@@ -46,10 +46,13 @@ export default function ViewJob({
       }
     } catch (err: unknown) {
       toast.triggerToast({
-        message: "Error: " + err,
+        message: String(err),
         isError: true,
         showToast: true,
       });
+      setTimeout(() => {
+        route.push("/")
+      },1500)
     } finally {
       setLoading(false);
     }

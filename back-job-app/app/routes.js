@@ -4,9 +4,11 @@ const JobInfo = require("./models/JobInformationModel");
 const Users = require("./models/Users");
 
 const mongoose = require("mongoose");
+
 // controller
 const UserAuthentication = require("./controller/UserAuthentication");
 const { authenticateToken } = require("./middleware/auth");
+const { StrToObjId } = require("./utils/StrToObjId");
 
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
@@ -16,7 +18,7 @@ router.get("/users", (req, res) => {
 router.post("/create-job", async (req, res) => {
   try {
     const { company, job_title, date_sent, state, job_description, other, user_id } = req.body;
-    const userIdObj = new mongoose.Types.ObjectId(user_id); 
+    const userIdObj = StrToObjId(user_id);
     if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
       return res.status(400).json*{
         success: false,
@@ -56,17 +58,17 @@ router.get("/jobs", async (req, res) => {
 
     let query = lastJobId
       ? {
-          _id: { $lt: new mongoose.Types.ObjectId(lastJobId) },
-          user_id: new mongoose.Types.ObjectId(userId),
+          _id: { $lt: StrToObjId(lastJobId) },
+          user_id: StrToObjId(userId),
         }
-      : { user_id: new mongoose.Types.ObjectId(userId) };
+      : { user_id: StrToObjId(userId) };
 
     const [jobs, total] = await Promise.all([
       JobInfo.find(query)
         .select("-job_description -other")
         .sort({ _id: -1 })
         .limit(limit),
-      JobInfo.countDocuments({}),
+      JobInfo.countDocuments({user_id: StrToObjId(userId)}),
     ]);
 
     const hasMore = jobs.length === limit;
@@ -97,7 +99,7 @@ router.get("/job-info/:id/:userId", async (req, res) => {
       throw new Error("Failed to fetch job but communicated with API");
     }
 
-    if (jobData.user_id !== jobData.user_id){
+    if (jobData.user_id !== userId){
       throw new Error("User ID does not match this job.")
     }
     
@@ -110,8 +112,7 @@ router.get("/job-info/:id/:userId", async (req, res) => {
     console.error("error in job fetch by ID: " + err);
     res.status(500).json({
       success: false,
-      message: `Failed to fetch job information: `,
-      err,
+      message: `Error: ` + err,
     });
   }
 });
@@ -122,7 +123,7 @@ router.delete("/delete-job/:id", async (req, res) => {
     if (!jobId) throw new Error("Not a valid job ID");
 
     const deleteJob = await JobInfo.deleteOne(
-      new mongoose.Types.ObjectId(jobId)
+      StrToObjId(jobId)
     );
     if (deleteJob.deletedCount === 1) {
       res.status(200).json({ success: true, message: `You deleted ${jobId}!` });
@@ -185,7 +186,7 @@ router.get("/query-jobs/:query/:userId", async (req, res) => {
     }
 
     const results = await JobInfo.aggregate([
-      { $match: { user_id: new mongoose.Types.ObjectId(userId)}},
+      { $match: { user_id: StrToObjId(userId)}},
       { $match: { $or: allConditions } },
       {
         $addFields: {
@@ -342,7 +343,7 @@ router.get("/user/me", authenticateToken, async (req, res) => {
     const userData = req.user;
 
     const userRes = await Users.findOne({
-      _id: new mongoose.Types.ObjectId(userData.user_id),
+      _id: StrToObjId(userData.user_id),
     });
 
     // if token is expired...
@@ -369,11 +370,13 @@ router.get("/user/me", authenticateToken, async (req, res) => {
 });
 router.put("/user/sign-in", async (req, res) => {
   try {
+    console.log(`user attempting to sign in `)
     const result = await UserAuthentication.signInUser(req.body);
 
     if (result.success) {
       res.status(200).json(result);
     } else if (result.statusCode) {
+      console.log(`test: `, result)
       res.status(400).json(result);
     }
   } catch (err) {

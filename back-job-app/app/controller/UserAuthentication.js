@@ -13,6 +13,7 @@ class UserAuthentication {
       // then I create entry
       const salt = bcrypt.genSaltSync(saltNum);
       const hash = bcrypt.hashSync(password, salt);
+      console.log(`values being sent: `, email.toLowerCase(), hash,)
       const result = await Users.create({
         email: email.toLowerCase(),
         password: hash,
@@ -55,15 +56,16 @@ class UserAuthentication {
   static async signInUser(userData) {
     const { email, password } = userData;
     try {
-      const match = await Users.findOne({ email: email.toLowerCase() });
-      if (!match) {
+      const match = await Users.find({ email: email.toLowerCase() });
+      if (!match || match.length === 0) {
         return {
           success: false,
           message: "No email matching entry is in my records",
           statusCode: 400,
         };
       }
-      const isValid = bcrypt.compareSync(password, match.password);
+      console.log(`match:`, match)
+      const isValid = bcrypt.compareSync(password, match[0].password);
       if (!isValid) {
         return {
           success: false,
@@ -72,7 +74,7 @@ class UserAuthentication {
         };
       }
        // GENERATE TOKEN HERE
-      const userId = match._id.toString();
+      const userId = match[0]._id.toString();
       const userToken = jwt.sign(
         {
           user_id: userId,
@@ -97,7 +99,7 @@ class UserAuthentication {
         },
       };
     } catch (err) {
-      console.log(`error in: UserAuthentication.createUser: ${err}`);
+      console.log(`error in: UserAuthentication.signIn: ${err}`);
       return {
         success: false,
         message: `Error: ${err}`,

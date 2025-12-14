@@ -6,13 +6,15 @@ const baseUrl =
 
 export default async function FetchJob(jobId: string, userId: string) {
   try {
+    console.log(`PING`)
     const res = await fetch(baseUrl + `/job-info/${jobId}/${userId}`, {
       method: "GET",
     });
-    if (!res.ok) {
-      throw new Error("Unable to communicate with API");
-    }
     const data = await res.json();
+    console.log(`data: `, data)
+    if (!res.ok) {
+      throw new Error(data.message);
+    }
     if (data.success) {
       return {
         success: true,
@@ -23,10 +25,10 @@ export default async function FetchJob(jobId: string, userId: string) {
       throw new Error(data.message);
     }
   } catch (err: unknown) {
-    console.error(`error in fetching job: ` + err);
+    console.error(`Error in fetching job: ` + err);
     return {
       success: false,
-      message: "Error: ", err,
+      message: String(err),
     };
   }
 }
