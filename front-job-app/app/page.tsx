@@ -87,7 +87,7 @@ export default function Home() {
           <JobDisplayList jobs={jobs}></JobDisplayList>
           <div ref={observerRef}></div>
         </div>
-      ) : user.userData.user_id !== '' ? <p>No applications to display</p>:(<a href={"/sign-in"}>Click here to Register</a>)}
+      ) : user.userData.user_id !== '' ? <p>No applications to display</p>:(<a href={"/sign-in"}>Click here to Sign In or Register</a>)}
       {loading && <p> loading...</p>}
     </div>
   );

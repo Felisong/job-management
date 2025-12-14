@@ -1,6 +1,6 @@
 "use client";
 
-import { ValidateUser } from "@/app/actions/ValidateUser";
+import { SendValidationEmail } from "@/app/actions/SendValidationEmail";
 import { useToast } from "@/app/utils/context/ShowToastContext";
 import { useUser } from "@/app/utils/context/UserDataContext";
 import { useRouter } from "next/navigation";
@@ -12,16 +12,14 @@ export default function UserDashBoard({
   params: Promise<{ id: string }>;
 }) {
   const { id: paramId = "" } = React.use(params);
-  console.log(`param id:`, paramId)
   const toast = useToast();
   const user = useUser();
   const router = useRouter();
 
-  // TODO: FIX User being rerouting upon signing into their own account.
   async function ValidateUserPage(e: MouseEvent) {
     e.preventDefault();
     try {
-      const validate = await ValidateUser(
+      const validate = await SendValidationEmail(
         user.userData.user_id,
         user.userData.user_email
       );
@@ -42,7 +40,6 @@ export default function UserDashBoard({
 
    useEffect(() => {
     if (!user.initialized || !paramId) return;
-    console.log(`paramId: `, paramId, user.userData.user_id);
     
     if (paramId !== user.userData.user_id) {
       toast.triggerToast({

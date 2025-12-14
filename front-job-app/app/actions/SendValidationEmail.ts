@@ -5,7 +5,7 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export async function ValidateUser(userId: string, email: string) {
+export async function SendValidationEmail(userId: string, email: string) {
   try {
     const res = await fetch(baseUrl + `/validation-email`, {
       method: "PUT",

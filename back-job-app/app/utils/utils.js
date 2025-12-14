@@ -12,7 +12,7 @@ const SendEmail = async (email, userId) => {
     await resend.emails.send({
       from: "onboarding@resend.dev",
       to: email,
-      subject: "Account Validation - :3 meow",
+      subject: "Account Validation - Job Tracker Web App",
       html: `
         <style>
         .container {  max-width: 600px; }
@@ -27,7 +27,7 @@ const SendEmail = async (email, userId) => {
         }
         </style>
         <div class="container">
-        <h1> Account Validation</h1>
+        <h1> Account Validation - Job Application Tracker</h1>
         <p> You have clicked that you wish to verify your account, please click the button below to verify.</p>
         <a href="${verifyLink}" class="button">Verify Email</a>
         <p> Thank you for testing my web app :) </p>
