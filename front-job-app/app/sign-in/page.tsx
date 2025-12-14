@@ -59,6 +59,7 @@ export default function SignInPage() {
         user_role: "",
         token_expiration: "",
         validated: false,
+        user_email: ""
       },
     };
     try {
@@ -71,9 +72,10 @@ export default function SignInPage() {
       // sets token as soon as it succeeds
       setAuthToken(result.userData.user_token);
       // immediately updates userData for immediate use
-      userData.refreshUser();
+      await userData.refreshUser();
+
       toast.triggerToast({
-        message: "Successfully created user, rerouting...",
+        message: result.message,
         isError: false,
         showToast: true,
       });

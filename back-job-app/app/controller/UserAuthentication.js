@@ -38,6 +38,7 @@ class UserAuthentication {
           user_role: "USER",
           token_expiration: "7d",
           validated: false,
+          user_email: lowerCaseEmail
         },
       };
     } catch (err) {
@@ -83,11 +84,12 @@ class UserAuthentication {
         message: "Successfully signed in user",
         statusCode: 200,
         userData: {
-          user_id: String(match._id),
+          user_id: userId,
           user_token: userToken,
           user_role: "USER",
           token_expiration: "7d",
           validated: false,
+          user_email: email.toLowerCase(),
         },
       };
     } catch (err) {

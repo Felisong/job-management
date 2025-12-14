@@ -34,6 +34,7 @@ export async function CreateUser(userInfo: userValueModel) {
         user_role: "",
         token_expiration: "",
         validated: false,
+        user_email: ""
       },
     };
   }

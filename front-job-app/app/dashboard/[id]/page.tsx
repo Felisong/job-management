@@ -11,15 +11,20 @@ export default function UserDashBoard({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const paramId = React.use(params).id || "";
+  const { id: paramId = "" } = React.use(params);
+  console.log(`param id:`, paramId)
   const toast = useToast();
   const user = useUser();
   const router = useRouter();
 
+  // TODO: FIX User being rerouting upon signing into their own account.
   async function ValidateUserPage(e: MouseEvent) {
     e.preventDefault();
     try {
-      const validate = await ValidateUser(user.userData.user_id, user.userData.user_email);
+      const validate = await ValidateUser(
+        user.userData.user_id,
+        user.userData.user_email
+      );
 
       toast.triggerToast({
         message: validate.message,
@@ -35,12 +40,13 @@ export default function UserDashBoard({
     }
   }
 
-  useEffect(() => {
-    if (!user.initialized) return;
-
+   useEffect(() => {
+    if (!user.initialized || !paramId) return;
+    console.log(`paramId: `, paramId, user.userData.user_id);
+    
     if (paramId !== user.userData.user_id) {
       toast.triggerToast({
-        message: `This url does not match your user information.}`,
+        message: `This url does not match your user information.`,
         isError: true,
         showToast: true,
       });
@@ -48,14 +54,15 @@ export default function UserDashBoard({
         router.push("/");
       }, 1500);
     }
+  }, [user.userData, user.initialized, paramId]);
 
-    // now on load, and after the user is initialized get any data I would want to here
-  }, [user.userData, user.initialized]);
 
   return (
     <div className="p-4">
       <h1>Hello</h1>
-      <button disabled={!user.initialized} onClick={ValidateUserPage}>Validate Account </button>
+      <button disabled={!user.initialized} onClick={ValidateUserPage}>
+        Validate Account{" "}
+      </button>
       <p>omg meow</p>
     </div>
   );
