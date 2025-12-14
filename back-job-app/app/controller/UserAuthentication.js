@@ -1,21 +1,23 @@
 const Users = require("../models/Users");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const Resend = require("resend");
+const { SendEmail, GenerateAuthToken } = require("../utils/utils");
 
 class UserAuthentication {
   static async createUser(userData) {
     try {
       const { email, password } = userData;
+      const lowerCaseEmail = email.toLowerCase();
       const saltNum = 10;
       // first I check if there is already an entry with the email
-      const exists = await Users.findOne({ email: email.toLowerCase() });
+      const exists = await Users.findOne({ email: lowerCaseEmail });
       if (exists) throw new Error("Email already exists.");
       // then I create entry
       const salt = bcrypt.genSaltSync(saltNum);
       const hash = bcrypt.hashSync(password, salt);
-      console.log(`values being sent: `, email.toLowerCase(), hash,)
+
       const result = await Users.create({
-        email: email.toLowerCase(),
+        email: lowerCaseEmail,
         password: hash,
         userRole: "USER",
         validated: false,
@@ -23,15 +25,10 @@ class UserAuthentication {
       });
       // GENERATE TOKEN HERE
       const userId = result._id.toString();
-      const userToken = jwt.sign(
-        {
-          user_id: userId,
-          email: email.toLowerCase(),
-          user_role: "USER",
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-      );
+      const userToken = GenerateAuthToken(userId, lowerCaseEmail, "USER");
+
+      // Send Validation Email
+      SendEmail(lowerCaseEmail, userId);
 
       return {
         success: true,
@@ -56,6 +53,7 @@ class UserAuthentication {
   static async signInUser(userData) {
     const { email, password } = userData;
     try {
+      // check if the user even exists
       const match = await Users.find({ email: email.toLowerCase() });
       if (!match || match.length === 0) {
         return {
@@ -64,7 +62,7 @@ class UserAuthentication {
           statusCode: 400,
         };
       }
-      console.log(`match:`, match)
+      // checks the credentials
       const isValid = bcrypt.compareSync(password, match[0].password);
       if (!isValid) {
         return {
@@ -73,18 +71,13 @@ class UserAuthentication {
           statusCode: 400,
         };
       }
-       // GENERATE TOKEN HERE
+      // GENERATE TOKEN HERE
       const userId = match[0]._id.toString();
-      const userToken = jwt.sign(
-        {
-          user_id: userId,
-          email: email.toLowerCase(),
-          user_role: match.userRole,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
+      const userToken = GenerateAuthToken(
+        userId,
+        email.toLowerCase(),
+        match[0].userRole
       );
-
 
       return {
         success: true,
