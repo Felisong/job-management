@@ -5,16 +5,15 @@ import { mongoose } from "mongoose";
 const frontUrl = process.env.FRONT_SITE_LINK;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-
-const SendEmail = (email, userId) => {
-  console.log(`Email being sent...`, userId, email)
+const SendEmail = async (email, userId) => {
   const verifyLink = `${frontUrl}/validate/${userId}`;
-  // === EMAIL ====
-  resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: email,
-    subject: "Account Validation - :3 meow",
-    html: `
+  
+  try {
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: "Account Validation - :3 meow",
+      html: `
         <style>
         .container {  max-width: 600px; }
         .button { 
@@ -22,11 +21,27 @@ const SendEmail = (email, userId) => {
           color: white; 
           padding: 12px 24px; 
           }
+        .tiny {
+          font-size: 0.7rem;
+          color: #241122ff;
+        }
         </style>
         <div class="container">
+        <h1> Account Validation</h1>
+        <p> You have clicked that you wish to verify your account, please click the button below to verify.</p>
         <a href="${verifyLink}" class="button">Verify Email</a>
+        <p> Thank you for testing my web app :) </p>
+        <br />
+        <p>Sincerely,</p>
+        <p> Carolina </p>
+        <p class="tiny">If you find any trouble using my site please contact me at carolinahs100@gmail.com</p>
         </div>`,
-  });
+    });
+    return { success: true, message: "Email should have sent" };
+  } catch (err) {
+    console.error(`failed sending email: ${String(err)}`);
+    return { success: false, message: String(err) };
+  }
 };
 
 const GenerateAuthToken = (userId, email, role) => {
@@ -44,6 +59,6 @@ const GenerateAuthToken = (userId, email, role) => {
 
 const StrToObjId = (value) => {
   return new mongoose.Types.ObjectId(value);
-}
+};
 
-export { SendEmail , GenerateAuthToken, StrToObjId};
+export { SendEmail, GenerateAuthToken, StrToObjId };

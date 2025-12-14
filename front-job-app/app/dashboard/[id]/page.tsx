@@ -1,7 +1,6 @@
 "use client";
 
 import { ValidateUser } from "@/app/actions/ValidateUser";
-import BasicButtonComponent from "@/app/components/BasicButtonComponent";
 import { useToast } from "@/app/utils/context/ShowToastContext";
 import { useUser } from "@/app/utils/context/UserDataContext";
 import { useRouter } from "next/navigation";
@@ -19,9 +18,8 @@ export default function UserDashBoard({
 
   async function ValidateUserPage(e: MouseEvent) {
     e.preventDefault();
-    console.log(`event: `, e);
     try {
-      const validate = await ValidateUser(user.userData.user_id);
+      const validate = await ValidateUser(user.userData.user_id, user.userData.user_email);
 
       toast.triggerToast({
         message: validate.message,
@@ -57,10 +55,7 @@ export default function UserDashBoard({
   return (
     <div className="p-4">
       <h1>Hello</h1>
-      <BasicButtonComponent
-        label="Validate Account"
-        action={ValidateUserPage}
-      />
+      <button disabled={!user.initialized} onClick={ValidateUserPage}>Validate Account </button>
       <p>omg meow</p>
     </div>
   );

@@ -18,7 +18,8 @@ export interface userValueModel {
 export interface userDataModel {
   user_id: string;
   user_role: string;
-  validated: boolean
+  validated: boolean;
+  user_email: string;
 }
 // export interface resumeDataModel {
 //   first_name: string;

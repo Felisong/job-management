@@ -5,11 +5,14 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export async function ValidateUser(userId : string) {
+export async function ValidateUser(userId: string, email: string) {
   try {
-    console.log(`front: ${userId}`);
-    const res = await fetch(baseUrl + `/validate/${userId}`, {
+    const res = await fetch(baseUrl + `/validation-email`, {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, email }),
     });
     if (!res.ok) {
       throw new Error(`Failed to connect to API`);
@@ -23,7 +26,7 @@ export async function ValidateUser(userId : string) {
   } catch (err: unknown) {
     return {
       success: false,
-      message: `Failed to validate: ` + err
+      message: `Failed to validate: ` + err,
     };
   }
 }

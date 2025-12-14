@@ -23,6 +23,7 @@ const defaultUserData: userDataModel = {
   user_id: "",
   user_role: "",
   validated: false,
+  user_email: ""
 };
 
 export const UserDataProvider = ({ children }: { children: ReactNode }) => {

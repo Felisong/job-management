@@ -6,7 +6,7 @@ import Users from "./models/Users.js";
 // controller and middleware
 import UserAuthentication from "./controller/UserAuthentication.js";
 import { authenticateToken } from "./middleware/auth.js";
-import { StrToObjId } from "./utils/utils.js";
+import { SendEmail, StrToObjId } from "./utils/utils.js";
 const router = express.Router();
 
 
@@ -366,6 +366,7 @@ router.get("/user/me", authenticateToken, async (req, res) => {
       user_id: userData.user_id,
       user_role: userRes.userRole,
       validated: userRes.validated,
+      user_email: userRes.email
     };
 
     res.status(200).json({
@@ -396,16 +397,17 @@ router.put("/user/sign-in", async (req, res) => {
   }
 });
 
-router.put("/user/validate/:id", async (req, res) => {
+router.put("/validation-email", async (req, res) => {
   try {
-    const userId = req.params.id;
-
-
-    // if (result.success) {
-      res.status(200).json(result);
-    // } 
+    const {userId, email} = req.body;
+    const result = await SendEmail(email, userId)
+    if (result.success) {
+      res.status(200).json({success: true, message: `User validation email sent.`});
+    }  else {
+      throw new Error(result.message)
+    }
   } catch (err) {
-    console.error("Error in user validation: " + err);
+    console.error("Error in user validation: ", err);
     res.status(500).json({
       success: false,
       message: "Error: " + err,
