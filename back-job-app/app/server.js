@@ -1,7 +1,10 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import routes from "./routes.js"
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const app = express();
 
@@ -23,7 +26,6 @@ app.get("/", (req, res) => {
 });
 
 // imports routes from sister file with /api/route here
-const routes = require("./routes");
 app.use("/api", routes);
 
 // Error handling middleware

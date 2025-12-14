@@ -6,12 +6,10 @@ const baseUrl =
 
 export default async function FetchJob(jobId: string, userId: string) {
   try {
-    console.log(`PING`)
     const res = await fetch(baseUrl + `/job-info/${jobId}/${userId}`, {
       method: "GET",
     });
     const data = await res.json();
-    console.log(`data: `, data)
     if (!res.ok) {
       throw new Error(data.message);
     }

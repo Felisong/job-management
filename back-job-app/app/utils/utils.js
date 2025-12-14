@@ -1,13 +1,17 @@
-const Resend = require("resend");
-const jwt = require("jsonwebtoken");
+import "dotenv/config";
+import { Resend } from "resend";
+import jwt from "jsonwebtoken";
+import { mongoose } from "mongoose";
 const frontUrl = process.env.FRONT_SITE_LINK;
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+
 const SendEmail = (email, userId) => {
+  console.log(`Email being sent...`, userId, email)
   const verifyLink = `${frontUrl}/validate/${userId}`;
   // === EMAIL ====
   resend.emails.send({
-    from: "carolinahs100@gmail.com",
+    from: "onboarding@resend.dev",
     to: email,
     subject: "Account Validation - :3 meow",
     html: `
@@ -38,4 +42,8 @@ const GenerateAuthToken = (userId, email, role) => {
   return userToken;
 };
 
-module.exports = { SendEmail , GenerateAuthToken};
+const StrToObjId = (value) => {
+  return new mongoose.Types.ObjectId(value);
+}
+
+export { SendEmail , GenerateAuthToken, StrToObjId};

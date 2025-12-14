@@ -1,14 +1,14 @@
-const express = require("express");
+import express from "express";
+import mongoose from "mongoose";
+import JobInfo from "./models/JobInformationModel.js";
+import Users from "./models/Users.js";
+
+// controller and middleware
+import UserAuthentication from "./controller/UserAuthentication.js";
+import { authenticateToken } from "./middleware/auth.js";
+import { StrToObjId } from "./utils/utils.js";
 const router = express.Router();
-const JobInfo = require("./models/JobInformationModel");
-const Users = require("./models/Users");
 
-const mongoose = require("mongoose");
-
-// controller
-const UserAuthentication = require("./controller/UserAuthentication");
-const { authenticateToken } = require("./middleware/auth");
-const { StrToObjId } = require("./utils/StrToObjId");
 
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
@@ -17,13 +17,24 @@ router.get("/users", (req, res) => {
 // all job related API's
 router.post("/create-job", async (req, res) => {
   try {
-    const { company, job_title, date_sent, state, job_description, other, user_id } = req.body;
+    const {
+      company,
+      job_title,
+      date_sent,
+      state,
+      job_description,
+      other,
+      user_id,
+    } = req.body;
     const userIdObj = StrToObjId(user_id);
     if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
-      return res.status(400).json*{
-        success: false,
-        message: "Invalid user ID"
-      }
+      return (
+        res.status(400).json *
+        {
+          success: false,
+          message: "Invalid user ID",
+        }
+      );
     }
     const create = await JobInfo.insertOne({
       company,
@@ -32,7 +43,7 @@ router.post("/create-job", async (req, res) => {
       state,
       job_description,
       other,
-      user_id: userIdObj
+      user_id: userIdObj,
     });
 
     if (create._id) {
@@ -43,7 +54,7 @@ router.post("/create-job", async (req, res) => {
       throw new Error(`Communicated with server but failed to create entry`);
     }
   } catch (err) {
-    console.error(`Error in create jobs: `, err)
+    console.error(`Error in create jobs: `, err);
     res
       .status(500)
       .json({ success: false, message: "Error in create-job: " + err });
@@ -68,7 +79,7 @@ router.get("/jobs", async (req, res) => {
         .select("-job_description -other")
         .sort({ _id: -1 })
         .limit(limit),
-      JobInfo.countDocuments({user_id: StrToObjId(userId)}),
+      JobInfo.countDocuments({ user_id: StrToObjId(userId) }),
     ]);
 
     const hasMore = jobs.length === limit;
@@ -89,7 +100,7 @@ router.get("/jobs", async (req, res) => {
 
 router.get("/job-info/:id/:userId", async (req, res) => {
   const jobId = req.params.id || "";
-  const userId = req.params.userId
+  const userId = req.params.userId;
 
   try {
     if (!jobId) throw new Error("Not a valid job ID");
@@ -99,10 +110,10 @@ router.get("/job-info/:id/:userId", async (req, res) => {
       throw new Error("Failed to fetch job but communicated with API");
     }
 
-    if (jobData.user_id !== userId){
-      throw new Error("User ID does not match this job.")
+    if (jobData.user_id !== userId) {
+      throw new Error("User ID does not match this job.");
     }
-    
+
     res.status(200).json({
       success: true,
       message: "fetched job information successfully.",
@@ -122,9 +133,7 @@ router.delete("/delete-job/:id", async (req, res) => {
   try {
     if (!jobId) throw new Error("Not a valid job ID");
 
-    const deleteJob = await JobInfo.deleteOne(
-      StrToObjId(jobId)
-    );
+    const deleteJob = await JobInfo.deleteOne(StrToObjId(jobId));
     if (deleteJob.deletedCount === 1) {
       res.status(200).json({ success: true, message: `You deleted ${jobId}!` });
     } else {
@@ -186,7 +195,7 @@ router.get("/query-jobs/:query/:userId", async (req, res) => {
     }
 
     const results = await JobInfo.aggregate([
-      { $match: { user_id: StrToObjId(userId)}},
+      { $match: { user_id: StrToObjId(userId) } },
       { $match: { $or: allConditions } },
       {
         $addFields: {
@@ -316,7 +325,8 @@ router.get("/query-jobs/:query/:userId", async (req, res) => {
   }
 });
 
-// ======== USER AUTHENTICATIONA AND SIGN IN =================
+// ======== USER AUTHENTICATION AND SIGN IN =================
+
 router.post("/create-user", async (req, res) => {
   const userData = req.body;
 
@@ -341,12 +351,12 @@ router.post("/create-user", async (req, res) => {
 router.get("/user/me", authenticateToken, async (req, res) => {
   try {
     const userData = req.user;
-
+    const userId = StrToObjId(userData.userId)
     const userRes = await Users.findOne({
       _id: StrToObjId(userData.user_id),
     });
 
-    // if token is expired...
+    // if token is expired return a failure. Marked as true for handling in front
     const tokenExpiryDate = new Date(userData.exp * 1000);
     const isExpired = new Date() > tokenExpiryDate;
     if (isExpired)
@@ -370,17 +380,15 @@ router.get("/user/me", authenticateToken, async (req, res) => {
 });
 router.put("/user/sign-in", async (req, res) => {
   try {
-    console.log(`user attempting to sign in `)
     const result = await UserAuthentication.signInUser(req.body);
 
     if (result.success) {
       res.status(200).json(result);
     } else if (result.statusCode) {
-      console.log(`test: `, result)
       res.status(400).json(result);
     }
   } catch (err) {
-    console.error("Error in user sign in" + err);
+    console.error("Error in user sign in: " + err);
     res.status(500).json({
       success: false,
       message: "Error: " + err,
@@ -388,4 +396,21 @@ router.put("/user/sign-in", async (req, res) => {
   }
 });
 
-module.exports = router;
+router.put("/user/validate/:id", async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+
+    // if (result.success) {
+      res.status(200).json(result);
+    // } 
+  } catch (err) {
+    console.error("Error in user validation: " + err);
+    res.status(500).json({
+      success: false,
+      message: "Error: " + err,
+    });
+  }
+});
+
+export default router;

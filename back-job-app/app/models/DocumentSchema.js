@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const DocumentSchema = new mongoose.Mongoose.Schema(
+const DocumentSchema = new mongoose.Schema(
     {
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,4 +24,4 @@ const DocumentSchema = new mongoose.Mongoose.Schema(
 )
 
 const Documents = mongoose.model('documents', DocumentSchema);
-module.exports = Documents;
+export default Documents;

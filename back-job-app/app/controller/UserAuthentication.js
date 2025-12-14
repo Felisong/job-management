@@ -1,7 +1,6 @@
-const Users = require("../models/Users");
-const bcrypt = require("bcrypt");
-const Resend = require("resend");
-const { SendEmail, GenerateAuthToken } = require("../utils/utils");
+import Users from "../models/Users.js";
+import bcrypt from "bcrypt";
+import { SendEmail, GenerateAuthToken } from "./../utils/utils.js";
 
 class UserAuthentication {
   static async createUser(userData) {
@@ -101,4 +100,4 @@ class UserAuthentication {
   }
 }
 
-module.exports = UserAuthentication;
+export default UserAuthentication;
