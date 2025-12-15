@@ -9,7 +9,6 @@ import { authenticateToken } from "./middleware/auth.js";
 import { SendEmail, StrToObjId } from "./utils/utils.js";
 const router = express.Router();
 
-
 router.get("/users", (req, res) => {
   res.json([{ id: 1, test: "wheee" }]);
 });
@@ -351,7 +350,7 @@ router.post("/create-user", async (req, res) => {
 router.get("/user/me", authenticateToken, async (req, res) => {
   try {
     const userData = req.user;
-    const userId = StrToObjId(userData.userId)
+    const userId = StrToObjId(userData.userId);
     const userRes = await Users.findOne({
       _id: StrToObjId(userData.user_id),
     });
@@ -366,7 +365,7 @@ router.get("/user/me", authenticateToken, async (req, res) => {
       user_id: userData.user_id,
       user_role: userRes.userRole,
       validated: userRes.validated,
-      user_email: userRes.email
+      user_email: userRes.email,
     };
 
     res.status(200).json({
@@ -397,15 +396,44 @@ router.put("/user/sign-in", async (req, res) => {
   }
 });
 
-router.put("/validation-email", async (req, res) => {
+router.post("/validation-email", async (req, res) => {
   try {
-    const {userId, email} = req.body;
-    const result = await SendEmail(email, userId)
+    const { userId, email } = req.body;
+    const result = await SendEmail(email, userId);
     if (result.success) {
-      res.status(200).json({success: true, message: `User validation email sent.`});
-    }  else {
-      throw new Error(result.message)
+      res
+        .status(200)
+        .json({ success: true, message: `User validation email sent.` });
+    } else {
+      throw new Error(result.message);
     }
+  } catch (err) {
+    console.error("Error in user validation email: ", err);
+    res.status(500).json({
+      success: false,
+      message: "Error: " + err,
+    });
+  }
+});
+router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
+  const paramId = req.params.paramId;
+  const tokenId = req.user.user_id;
+  try {
+    if (paramId !== tokenId)
+      throw new Error(`You cannot verify other people's accounts`);
+    // update here?
+    const validate = await Users.updateOne(
+      {
+        _id: tokenId,
+      },
+      {
+        $set: { validated: true },
+      }
+    );
+    if (validate.matchedCount === 0) throw new Error("User not found.");
+    // check if this url works first
+
+    res.status(200).json({ success: true, message: `User is validated.` });
   } catch (err) {
     console.error("Error in user validation: ", err);
     res.status(500).json({

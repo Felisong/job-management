@@ -28,13 +28,18 @@ const SendEmail = async (email, userId) => {
         </style>
         <div class="container">
         <h1> Account Validation - Job Application Tracker</h1>
-        <p> You have clicked that you wish to verify your account, please click the button below to verify.</p>
+        <p> You have clicked for this email to be validated please click the button below to verify.</p>
         <a href="${verifyLink}" class="button">Verify Email</a>
         <p> Thank you for testing my web app :) </p>
         <br />
         <p>Sincerely,</p>
         <p> Carolina </p>
         <p class="tiny">If you find any trouble using my site please contact me at carolinahs100@gmail.com</p>
+        <p class="tiny">If you did not request for this email, 
+        <span>
+        <a href="${frontUrl}/contact-me"> Let me know.</a>
+        </span> 
+        </p>
         </div>`,
     });
     return { success: true, message: "Email should have sent" };

@@ -1,25 +1,29 @@
 "use server";
-
 const baseUrl =
   process.env.NODE_ENV === "development"
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export async function SendValidationEmail(userId: string, email: string) {
+export default async function ValidateUser( paramId: string, token: string | null) {
   try {
-    const res = await fetch(baseUrl + `/validation-email`, {
-      method: "POST",
+    if (!paramId || !token) throw new Error("Missing data to submit.");
+
+    const res = await fetch(baseUrl + `/users/validate/${paramId}`, {
+      method: "PUT",
       headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, email }),
+        'Authorization': `Bearer ${token}`,
+      }
     });
+    console.log(`response: `, res)
     if (!res.ok) {
       throw new Error(`Failed to connect to API`);
     }
     const data = await res.json();
     if (data.success) {
-      return data;
+      return {
+        success: true,
+        message: "Verified user!"
+      };
     } else {
       throw new Error(data.message);
     }
