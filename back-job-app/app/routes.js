@@ -378,6 +378,7 @@ router.get("/user/me", authenticateToken, async (req, res) => {
     res.status(500).json({ success: false, message: "Error fetching user." });
   }
 });
+
 router.put("/user/sign-in", async (req, res) => {
   try {
     const result = await UserAuthentication.signInUser(req.body);
@@ -415,13 +416,13 @@ router.post("/validation-email", async (req, res) => {
     });
   }
 });
+
 router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
   const paramId = req.params.paramId;
   const tokenId = req.user.user_id;
   try {
     if (paramId !== tokenId)
       throw new Error(`You cannot verify other people's accounts`);
-    // update here?
     const validate = await Users.updateOne(
       {
         _id: tokenId,
@@ -431,8 +432,6 @@ router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
       }
     );
     if (validate.matchedCount === 0) throw new Error("User not found.");
-    // check if this url works first
-
     res.status(200).json({ success: true, message: `User is validated.` });
   } catch (err) {
     console.error("Error in user validation: ", err);
