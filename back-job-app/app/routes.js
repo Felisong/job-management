@@ -25,7 +25,9 @@ router.post("/create-job", async (req, res) => {
       other,
       user_id,
     } = req.body;
+    console.log(`user id: `, req.body)
     const userIdObj = StrToObjId(user_id);
+    console.log(`user id obj: `, userIdObj)
     if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
       return (
         res.status(400).json *
@@ -44,7 +46,7 @@ router.post("/create-job", async (req, res) => {
       other,
       user_id: userIdObj,
     });
-
+    console.log(`create res: `, create)
     if (create._id) {
       res
         .status(200)
@@ -108,8 +110,7 @@ router.get("/job-info/:id/:userId", async (req, res) => {
     if (!jobData.company) {
       throw new Error("Failed to fetch job but communicated with API");
     }
-
-    if (jobData.user_id !== userId) {
+    if (String(jobData.user_id) !== userId) {
       throw new Error("User ID does not match this job.");
     }
 
@@ -119,7 +120,7 @@ router.get("/job-info/:id/:userId", async (req, res) => {
       jobData: jobData,
     });
   } catch (err) {
-    console.error("error in job fetch by ID: " + err);
+    console.error(err);
     res.status(500).json({
       success: false,
       message: `Error: ` + err,

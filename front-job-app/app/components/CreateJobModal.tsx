@@ -16,7 +16,7 @@ import { useUser } from "../utils/context/UserDataContext";
 export default function CreateJobModal() {
   const toast = useToast();
   const router = useRouter();
-  const {userData} = useUser();
+  const {userData , initialized} = useUser();
   const { isOpen, closeModal } = useModal();
   const [formIsValid, setFormIsValid] = useState<boolean>(false);
   const d = new Date();
@@ -172,7 +172,7 @@ export default function CreateJobModal() {
           />
           <button
             className="text-xl text-white py-4 self-start mt-8 disabled:text-gray-400 disabled:cursor-not-allowed "
-            disabled={!formIsValid}
+            disabled={!formIsValid || !initialized}
             onClick={(e) => {
               e.preventDefault();
               handleCreateJob();
