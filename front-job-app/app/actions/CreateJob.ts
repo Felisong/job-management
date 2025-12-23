@@ -8,7 +8,6 @@ const baseUrl =
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 export async function CreateJob(job: JobInformationModel) {
   try {
-    console.log(`job being sent: `, job)
     const res = await fetch(baseUrl + `/create-job`, {
       method: "POST",
       headers: {

@@ -41,11 +41,7 @@ export default function UserDashBoard({
   // pop up to avoid misclicks
   function userConfirm() {
     // return true or false
-    
   }
-  //TODO:
-  //FIX JOB DATA DISPLAY
-
   // TODO:
   /* 
   1. Hide Validate Account Button if user is valid.
