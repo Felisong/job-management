@@ -55,7 +55,7 @@ export const UserDataProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (err: unknown) {
       console.error(err);
-      // showtoast if I want to let the user know their token is bogues
+      // showtoast if I want to let the user know their token is bogus
       removeAuthToken();
     } 
   };

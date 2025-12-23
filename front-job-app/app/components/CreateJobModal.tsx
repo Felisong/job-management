@@ -52,7 +52,8 @@ export default function CreateJobModal() {
   // sends the fetch and handles the results of that fetch
   async function handleCreateJob() {
     try {
-      const result = await CreateJob(jobInfo);
+      const updatedJob = {...jobInfo, user_id: userData.user_id};
+      const result = await CreateJob(updatedJob);
       if (result.success) {
         toast.triggerToast({
           message: result.message,
@@ -97,6 +98,7 @@ export default function CreateJobModal() {
   // resets value when modal closes
   useEffect(() => {
     if (!isOpen) {
+      console.log(`user id: `, userData)
       setJobInfo({
         _id: "",
         company: "",

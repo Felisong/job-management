@@ -25,9 +25,7 @@ router.post("/create-job", async (req, res) => {
       other,
       user_id,
     } = req.body;
-    console.log(`user id: `, req.body)
     const userIdObj = StrToObjId(user_id);
-    console.log(`user id obj: `, userIdObj)
     if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
       return (
         res.status(400).json *
