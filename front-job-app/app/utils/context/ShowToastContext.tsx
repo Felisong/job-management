@@ -6,6 +6,8 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -13,6 +15,9 @@ export type showToastData = {
   message: string;
   isError: boolean;
   showToast: boolean;
+  requiresConfirmation?: boolean;
+  onConfirm?: () => void;
+  onCancel?: () => void;
 };
 
 type toastContextType = {
@@ -24,20 +29,31 @@ const ShowToastContext = createContext<toastContextType | undefined>(undefined);
 
 // provider
 export const ShowToastProvider = ({ children }: { children: ReactNode }) => {
-  const [toastData, setToastData] = useState<{
-    message: string;
-    isError: boolean;
-    showToast: boolean;
-  }>({
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [toastData, setToastData] = useState<showToastData>({
     message: "",
     isError: false,
     showToast: false,
   });
 
   const triggerToast = (data: showToastData) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     setToastData(data);
-    setTimeout(() => setToastData({ ...toastData, showToast: false }), 3000);
+
+    if (!data.requiresConfirmation) {
+      setTimeout(() => setToastData({ ...toastData, showToast: false }), 3000);
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current){
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <ShowToastContext.Provider value={{ toastData, triggerToast }}>
