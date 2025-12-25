@@ -17,8 +17,7 @@ export default function UserDashBoard({
   const router = useRouter();
 
   // call to send an email to the user.
-  async function SubmitEmail(e: MouseEvent) {
-    e.preventDefault();
+  async function ValidateUser() {
     try {
       const validate = await SendValidationEmail(
         user.userData.user_id,
@@ -37,18 +36,45 @@ export default function UserDashBoard({
       });
     }
   }
+  // call to change user password
+  async function ChangePassword() {
+    try {
+      // fetch
+      console.log(`password change triggered`)
+    } catch (err) {}
+  }
 
-
-  // TODO:
-  /* 
-  1. Hide Validate Account Button if user is valid.
-  2. Add Change Password Button and add it to sign in
-  3. Add Change Email Button 
-  4. Create a Contact Me Page? Should it be a page? 
-      Might make it a Modal. Or Just in the footer
-  5. Create Delete Account Function
-  6. == Test User Auth some. ===
-  */
+  // pop up
+  async function confirmAction(e: MouseEvent, action: string) {
+    // pop up
+    toast.triggerToast({
+      message: "Are you sure?",
+      isError: false,
+      showToast: true,
+      requiresConfirmation: true,
+      onConfirm: async () => {
+        switch (action) {
+          case "change-pw":
+            await ChangePassword();
+            break;
+          case "change-email":
+            // change email function
+            break;
+          case "delete-acc":
+            // delete acc function
+            break;
+          case "user-validation":
+            await ValidateUser();
+            break;
+          default:
+            break;
+        }
+      },
+      onCancel: () => {
+        return;
+      },
+    });
+  }
 
   // auth check
   useEffect(() => {
@@ -74,7 +100,9 @@ export default function UserDashBoard({
           <button
             className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
             disabled={!user.initialized}
-            onClick={SubmitEmail}
+            onClick={(e) => {
+              confirmAction(e, "user-validation");
+            }}
           >
             Validate Account{" "}
           </button>
@@ -82,21 +110,27 @@ export default function UserDashBoard({
         <button
           className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
           disabled={!user.initialized}
-          onClick={() => {}}
+          onClick={(e) => {
+            confirmAction(e, "change-pw");
+          }}
         >
           Change Password
         </button>
-          <button
+        <button
           className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
           disabled={!user.initialized}
-          onClick={() => {}}
+          onClick={(e) => {
+            confirmAction(e, "change-email");
+          }}
         >
           Change Email
         </button>
-          <button
+        <button
           className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
           disabled={!user.initialized}
-          onClick={() => {}}
+          onClick={(e) => {
+            confirmAction(e, "delete-acc");
+          }}
         >
           Delete Account
         </button>
