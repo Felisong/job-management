@@ -44,7 +44,7 @@ router.post("/create-job", async (req, res) => {
       other,
       user_id: userIdObj,
     });
-    console.log(`create res: `, create)
+    console.log(`create res: `, create);
     if (create._id) {
       res
         .status(200)
@@ -434,6 +434,18 @@ router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
     res.status(200).json({ success: true, message: `User is validated.` });
   } catch (err) {
     console.error("Error in user validation: ", err);
+    res.status(500).json({
+      success: false,
+      message: "Error: " + err,
+    });
+  }
+});
+
+router.post("users/change-pw", authenticateToken, async (res, req) => {
+  try {
+    console.log(req.body);
+  } catch (err) {
+    console.error("Error in user change pw: ", err);
     res.status(500).json({
       success: false,
       message: "Error: " + err,
