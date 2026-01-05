@@ -69,8 +69,7 @@ export default function UserDashBoard({
   // call to change user password
   async function changePassword() {
     try {
-      triggerModal(true);
-      if (confirmInput.email.value !== user.userData.user_email) {
+      if (confirmInput.email.value.toLowerCase() !== user.userData.user_email.toLowerCase()) {
         throw new Error(
           "email entered does not match our records... Please contact me directly."
         );
@@ -184,7 +183,7 @@ export default function UserDashBoard({
             disabled={!user.initialized}
             onClick={(e) => {
               e.preventDefault();
-              // mark to show input
+              triggerModal(false);
             }}
           >
             Change Password
@@ -194,7 +193,7 @@ export default function UserDashBoard({
             disabled={!user.initialized}
             onClick={(e) => {
               e.preventDefault();
-              // mark to show inputs
+              triggerModal(true);
             }}
           >
             Change Email
