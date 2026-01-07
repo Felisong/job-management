@@ -399,7 +399,7 @@ router.put("/user/sign-in", async (req, res) => {
 router.post("/validation-email", async (req, res) => {
   try {
     const { userId, email } = req.body;
-    const result = await SendEmail(email, userId);
+    const result = await SendEmail(email, userId, "validation");
     if (result.success) {
       res
         .status(200)
@@ -441,9 +441,18 @@ router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("users/change-pw", authenticateToken, async (res, req) => {
+router.post("users/email-change-pw", authenticateToken, async (res, req) => {
   try {
-    console.log(req.body);
+    //  make sure i receive data, if not return error
+    const { userId, email } = req.body;
+    if (!userId || !email) throw new Error("Missing required user information");
+    // send email
+    const result = await SendEmail(email, userId, "password");
+    if (!result.success)throw new Error(result.message);
+    // make page where user changes email or password. That page has to be sure.
+      res
+        .status(200)
+        .json({ success: true, message: `Email to change password has been sent.` });
   } catch (err) {
     console.error("Error in user change pw: ", err);
     res.status(500).json({

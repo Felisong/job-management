@@ -71,7 +71,7 @@ export default function UserDashBoard({
     try {
       if (confirmInput.email.value.toLowerCase() !== user.userData.user_email.toLowerCase()) {
         throw new Error(
-          "email entered does not match our records... Please contact me directly."
+          "Email entered does not match our records... Please double check or contact me directly."
         );
       }
       await ChangeUserPassword(
@@ -90,6 +90,8 @@ export default function UserDashBoard({
         isError: true,
         showToast: true,
       });
+    } finally {
+      setShowModal(false);
     }
   }
   // call to change user email
@@ -136,7 +138,7 @@ export default function UserDashBoard({
   return (
     <>
       {showModal && (
-        <div className="bg-blue-900 p-4">
+        <div className="bg-blue-900 p-4 h-fit">
           <TextInputComponent
             label="Email"
             value={confirmInput.email.value}
