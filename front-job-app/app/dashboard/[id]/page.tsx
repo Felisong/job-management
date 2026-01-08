@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeUserPassword } from "@/app/actions/ChangePassword";
+import { ChangeUserPasswordEmail } from "@/app/actions/ChangePasswordEmail";
 import { SendValidationEmail } from "@/app/actions/SendValidationEmail";
 import BasicButtonComponent from "@/app/components/BasicButtonComponent";
 import TextInputComponent from "@/app/components/TextInputComponent";
@@ -68,7 +68,7 @@ export default function UserDashBoard() {
           "Email entered does not match our records... Please double check or contact me directly."
         );
       }
-      await ChangeUserPassword(
+      await ChangeUserPasswordEmail(
         user.userData.user_id,
         user.userData.user_email,
         getAuthToken()
@@ -88,6 +88,7 @@ export default function UserDashBoard() {
       setShowModal(false);
     }
   }
+  //TODO: change user email next, i got the pw one to send the link
   // call to change user email
   async function changeEmail() {
     try {

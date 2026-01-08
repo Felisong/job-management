@@ -5,7 +5,7 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export async function ChangeUserPassword(userId: string, email: string, token: string | null) {
+export async function ChangeUserPasswordEmail(userId: string, email: string, token: string | null) {
   try {
     console.log(`i get to the action: `, userId, email, token)
     const res = await fetch(baseUrl + `/users/change-pw`, {
