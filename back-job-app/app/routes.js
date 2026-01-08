@@ -461,5 +461,25 @@ router.post("users/email-change-pw", authenticateToken, async (res, req) => {
     });
   }
 });
+router.post("users/password-change-email", authenticateToken, async (res, req) => {
+  try {
+    //  make sure i receive data, if not return error
+    const { userId, email } = req.body;
+    if (!userId || !email) throw new Error("Missing required user information");
+    // send email
+    const result = await SendEmail(email, userId, "email");
+    if (!result.success)throw new Error(result.message);
+    // make page where user changes email or password. That page has to be sure.
+      res
+        .status(200)
+        .json({ success: true, message: `Email to change email has been sent.` });
+  } catch (err) {
+    console.error("Error in user change email: ", err);
+    res.status(500).json({
+      success: false,
+      message: "Error: " + err,
+    });
+  }
+});
 
 export default router;

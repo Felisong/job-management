@@ -44,6 +44,7 @@ const SendEmail = async (email, userId, type) => {
     const capitalizedType =
       type.substring(0, 1).toUpperCase() + type.substring(1);
     subject = `Change your ${capitalizedType}`;
+    changeDataLink = `${frontUrl}/change/${type}`
     htmlContent = `
         <style>
         .container {  max-width: 600px; }

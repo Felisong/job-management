@@ -10,15 +10,9 @@ import { getAuthToken } from "@/app/utils/cookies";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 
-export default function UserDashBoard({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id: paramId = "" } = React.use(params);
+export default function UserDashBoard() {
   const toast = useToast();
-  const user = useUser();
-  const router = useRouter();
+  const user = useUser()
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isEmailChange, setisEmailChange] = useState<boolean>(false);
   const [confirmInput, setConfirmInput] = useState<{
@@ -118,22 +112,6 @@ export default function UserDashBoard({
       },
     });
   }
-
-  // auth check
-  useEffect(() => {
-    if (!user.initialized || !paramId) return;
-
-    if (paramId !== user.userData.user_id) {
-      toast.triggerToast({
-        message: `This url does not match your user information.`,
-        isError: true,
-        showToast: true,
-      });
-      setTimeout(() => {
-        router.push("/");
-      }, 1500);
-    }
-  }, [user.userData, user.initialized, paramId]);
 
   return (
     <>
