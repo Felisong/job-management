@@ -37,8 +37,13 @@ export default function ChangeUserInformationPage({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     e.preventDefault();
-    // meow
+    // TODO: i think, since the other page sends the email to rediect here, I need something to check against
+    // make sure they got the email to access this page... maybe a variable in the DB to access?
+    // also does it really matter to me that someone can change their own email if they can confirm their prior email / password?
+    // I think.... just add the confirmation here again.
     // submit the user
+    // meow
+    // const result = await 
   }
 
   // sets loading to false once the type is read so that the user can fill what they need
@@ -59,6 +64,7 @@ export default function ChangeUserInformationPage({
     );
   }
 
+  
   return (
     <div className="p-4">
       <h1>Change {capitalizedType}</h1>

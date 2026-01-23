@@ -7,8 +7,7 @@ const baseUrl =
 
 export async function ChangeUserPasswordEmail(userId: string, email: string, token: string | null) {
   try {
-    console.log(`i get to the action: `, userId, email, token)
-    const res = await fetch(baseUrl + `/users/change-pw`, {
+    const res = await fetch(baseUrl + `/users/pw-change-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

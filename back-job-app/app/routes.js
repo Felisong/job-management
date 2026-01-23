@@ -441,7 +441,7 @@ router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("users/email-change-pw", authenticateToken, async (res, req) => {
+router.post("users/pw-change-email", authenticateToken, async (res, req) => {
   try {
     //  make sure i receive data, if not return error
     const { userId, email } = req.body;
@@ -461,7 +461,9 @@ router.post("users/email-change-pw", authenticateToken, async (res, req) => {
     });
   }
 });
-router.post("users/password-change-email", authenticateToken, async (res, req) => {
+// TODO: merge these two API endpoints to one and edit the front end fetch to match. I just realized that i just need to send type in the object and then it can do both of these in one
+// afterwards create the function to actually change the email or password. 
+router.post("users/email-change-email", authenticateToken, async (res, req) => {
   try {
     //  make sure i receive data, if not return error
     const { userId, email } = req.body;
@@ -481,5 +483,7 @@ router.post("users/password-change-email", authenticateToken, async (res, req) =
     });
   }
 });
+
+router.post("users/change-user")
 
 export default router;

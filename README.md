@@ -23,13 +23,5 @@ I also made this to learn how to use docker in development.
 - [svg to tsx converter](https://svg2jsx.com/)
 
 ### Goals
-
-- Create the Create function endpoint and have an easy way to add new jobs now.
-- With that I have full CRUD operations on the jobs.
-- From here I want to design overhaul for a bit on the front end and make it look a bit more acceptable
-  === stretch goals ====
-- Create users.
-- Start with MongoDB on the intended structure
-- attach my user ID to all entries so far since they're mine
-- Test this
-- Then look into AI implementation
+- finish up user CRUD functionality
+- start on gemini API to help and figure out the structure for how to implement
