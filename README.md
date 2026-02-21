@@ -25,3 +25,6 @@ I also made this to learn how to use docker in development.
 ### Goals
 - finish up user CRUD functionality
 - start on gemini API to help and figure out the structure for how to implement
+- Remember to make it so if a user presses enter on the sign in inputs to just submit their
+ data to sign in. QOL thing.
+- I really want to come back to this for fun. So I will! See you soon job project I want ot make you actually good.
