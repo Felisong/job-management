@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeUserPasswordEmail } from "@/app/actions/ChangePasswordEmail";
+import ChangeUserPasswordEmail from "@/app/actions/ChangeUserPasswordEmail";
 import { SendValidationEmail } from "@/app/actions/SendValidationEmail";
 import BasicButtonComponent from "@/app/components/BasicButtonComponent";
 import TextInputComponent from "@/app/components/TextInputComponent";
@@ -8,13 +8,16 @@ import { useToast } from "@/app/utils/context/ShowToastContext";
 import { useUser } from "@/app/utils/context/UserDataContext";
 import { getAuthToken } from "@/app/utils/cookies";
 import { useRouter } from "next/navigation";
+
 import React, { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 
 export default function UserDashBoard() {
   const toast = useToast();
-  const user = useUser()
+  const user = useUser();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isEmailChange, setisEmailChange] = useState<boolean>(false);
+  const router = useRouter();
+
   const [confirmInput, setConfirmInput] = useState<{
     email: { label: string; value: string };
     password: { label: string; value: string };
@@ -28,7 +31,7 @@ export default function UserDashBoard() {
   // handles the state of the input.
   function handleInputChange(
     e: React.ChangeEvent<HTMLInputElement>,
-    input: keyof typeof confirmInput
+    input: keyof typeof confirmInput,
   ) {
     setConfirmInput((prev) => ({
       ...prev,
@@ -44,7 +47,7 @@ export default function UserDashBoard() {
     try {
       const validate = await SendValidationEmail(
         user.userData.user_id,
-        user.userData.user_email
+        user.userData.user_email,
       );
       toast.triggerToast({
         message: validate.message,
@@ -60,18 +63,29 @@ export default function UserDashBoard() {
     }
   }
 
-  // call to change user password
+  // call to change user email => just redirect to the page
+  // i want an email if im
+  // i have 3 buttons , delete, change email, change password
+  // delete is easy and seperate
+  // changing email means i dont have access  , check the old email passsword and update
+  // changing pw means i DO have acces to email, must send email , then update password.
+
+  // i already have an password updater that sends the email which then redirects the user to the reset pw page. with the new email
   async function changePassword() {
     try {
-      if (confirmInput.email.value.toLowerCase() !== user.userData.user_email.toLowerCase()) {
+      if (
+        confirmInput.email.value.toLowerCase() !==
+        user.userData.user_email.toLowerCase()
+      ) {
         throw new Error(
-          "Email entered does not match our records... Please double check or contact me directly."
+          "Email entered does not match our records... Please double check or contact me directly.",
         );
       }
       await ChangeUserPasswordEmail(
         user.userData.user_id,
         user.userData.user_email,
-        getAuthToken()
+        confirmInput.password.value,
+        getAuthToken(),
       );
       toast.triggerToast({
         message: "Sent email to reset password",
@@ -88,15 +102,6 @@ export default function UserDashBoard() {
       setShowModal(false);
     }
   }
-  //TODO: change user email next, i got the pw one to send the link
-  // call to change user email
-  async function changeEmail() {
-    try {
-      // fetch
-      console.log(`email change triggered`);
-    } catch (err) {}
-  }
-
   // call to delete account
   async function deleteAccount() {
     // pop up to get user confirmation
@@ -139,7 +144,7 @@ export default function UserDashBoard() {
             action={(e) => {
               e.preventDefault();
               if (isEmailChange) {
-                changeEmail();
+                router.push("/change/email");
               } else {
                 changePassword();
               }
@@ -150,35 +155,42 @@ export default function UserDashBoard() {
       <div className="p-4">
         <h1>User Dashboard</h1>
         <div className="p-4 flex flex-col gap-8">
-          {!user.userData.validated && (
-            <button
-              className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
-              disabled={!user.initialized}
-              onClick={ValidateUser}
-            >
-              Validate Account{" "}
-            </button>
+          {!user.userData.validated ? (
+            <>
+              <p>To Change PW or Email you must validate your email.</p>
+              <button
+                className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
+                disabled={!user.initialized}
+                onClick={ValidateUser}
+              >
+                Validate Account{" "}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
+                disabled={!user.initialized}
+                onClick={(e) => {
+                  e.preventDefault();
+                  triggerModal(false);
+                }}
+              >
+                Change Password
+              </button>
+              <button
+                className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
+                disabled={!user.initialized}
+                onClick={(e) => {
+                  e.preventDefault();
+                  triggerModal(true);
+                }}
+              >
+                Change Email
+              </button>
+            </>
           )}
-          <button
-            className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
-            disabled={!user.initialized}
-            onClick={(e) => {
-              e.preventDefault();
-              triggerModal(false);
-            }}
-          >
-            Change Password
-          </button>
-          <button
-            className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
-            disabled={!user.initialized}
-            onClick={(e) => {
-              e.preventDefault();
-              triggerModal(true);
-            }}
-          >
-            Change Email
-          </button>
+
           <button
             className="text-[clamp(1.5rem,_1.7rem,_2rem)] text-start"
             disabled={!user.initialized}

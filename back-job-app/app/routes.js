@@ -153,7 +153,7 @@ router.put("/update-job", async (req, res) => {
       res.status(200).json({ success: true, message: `you did it` });
     } else
       throw new Error(
-        `unable to update the job, please contact me if this fails`
+        `unable to update the job, please contact me if this fails`,
       );
   } catch (err) {
     req.status(500).json({ success: false, message: "false" });
@@ -428,7 +428,7 @@ router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
       },
       {
         $set: { validated: true },
-      }
+      },
     );
     if (validate.matchedCount === 0) throw new Error("User not found.");
     res.status(200).json({ success: true, message: `User is validated.` });
@@ -441,6 +441,7 @@ router.put("/users/validate/:paramId", authenticateToken, async (req, res) => {
   }
 });
 
+// email to reset password.
 router.post("users/pw-change-email", authenticateToken, async (res, req) => {
   try {
     //  make sure i receive data, if not return error
@@ -448,11 +449,12 @@ router.post("users/pw-change-email", authenticateToken, async (res, req) => {
     if (!userId || !email) throw new Error("Missing required user information");
     // send email
     const result = await SendEmail(email, userId, "password");
-    if (!result.success)throw new Error(result.message);
+    if (!result.success) throw new Error(result.message);
     // make page where user changes email or password. That page has to be sure.
-      res
-        .status(200)
-        .json({ success: true, message: `Email to change password has been sent.` });
+    res.status(200).json({
+      success: true,
+      message: `Email to change password has been sent.`,
+    });
   } catch (err) {
     console.error("Error in user change pw: ", err);
     res.status(500).json({
@@ -461,20 +463,44 @@ router.post("users/pw-change-email", authenticateToken, async (res, req) => {
     });
   }
 });
-// TODO: merge these two API endpoints to one and edit the front end fetch to match. I just realized that i just need to send type in the object and then it can do both of these in one
-// afterwards create the function to actually change the email or password. 
-router.post("users/email-change-email", authenticateToken, async (res, req) => {
+
+router.post("users/change-user-info", authenticateToken, async (res, req) => {
   try {
-    //  make sure i receive data, if not return error
-    const { userId, email } = req.body;
-    if (!userId || !email) throw new Error("Missing required user information");
-    // send email
-    const result = await SendEmail(email, userId, "email");
-    if (!result.success)throw new Error(result.message);
-    // make page where user changes email or password. That page has to be sure.
-      res
-        .status(200)
-        .json({ success: true, message: `Email to change email has been sent.` });
+    const { userId, email, password } = req.body;
+    let newPw = "";
+
+    if (!userId) throw new Error("user not found.");
+    // if userId doesnt exist, itll fail.
+    let updatedCol = "";
+
+    if (!email && password) {
+      updatedCol = "password";
+      // check userId and get emaill from it
+      // email value === email ?
+      // salt and hash the new pw
+      // newPW = hashedPw
+    } else {
+      updatedCol = "email";
+      // if trying to change email, need password which is fine
+      // check password against hashedPw
+      // throw error if it doesnt match
+      // dont allow email change
+    }
+
+    const result = await Users.updateOne(
+      {
+        _id: "123",
+      },
+      {
+        $set: { validated: true, [updatedCol]: updatedCol },
+      },
+    );
+    // if (result)
+    console.log(`what returns if i dont have a valid id: `, result);
+    if (!result.success) throw new Error(result.message);
+    res
+      .status(200)
+      .json({ success: true, message: `Email to change email has been sent.` });
   } catch (err) {
     console.error("Error in user change email: ", err);
     res.status(500).json({
@@ -484,6 +510,6 @@ router.post("users/email-change-email", authenticateToken, async (res, req) => {
   }
 });
 
-router.post("users/change-user")
+router.post("users/change-user");
 
 export default router;

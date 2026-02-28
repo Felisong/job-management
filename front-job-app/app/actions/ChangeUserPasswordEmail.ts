@@ -5,15 +5,20 @@ const baseUrl =
     ? process.env.NEXT_PUBLIC_API_URL
     : process.env.NEXT_PUBLIC_API_URL_PROD;
 
-export async function ChangeUserPasswordEmail(userId: string, email: string, token: string | null) {
+export default async function ChangeUserPasswordEmail(
+  userId: string,
+  email: string,
+  password: string,
+  token: string | null,
+) {
   try {
     const res = await fetch(baseUrl + `/users/pw-change-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ userId, email }),
+      body: JSON.stringify({ userId, email, password }),
     });
     if (!res.ok) {
       throw new Error(`Failed to connect to API`);

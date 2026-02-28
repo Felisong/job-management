@@ -27,31 +27,35 @@ export default function ChangeUserInformationPage({
   // state change handler for text inputs
   function handleInputChange(
     e: React.ChangeEvent<HTMLInputElement>,
-    input: keyof typeof values
+    input: keyof typeof values,
   ) {
     setValues((prev) => ({ ...prev, [input]: e.target.value }));
   }
 
   // submit function to update user info
   async function changeUserInformation(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
-    // TODO: i think, since the other page sends the email to rediect here, I need something to check against
-    // make sure they got the email to access this page... maybe a variable in the DB to access?
-    // also does it really matter to me that someone can change their own email if they can confirm their prior email / password?
-    // I think.... just add the confirmation here again.
+    
     // submit the user
-    // meow
     // const result = await 
+    // meow
   }
 
+  // lets say someone resets their pw
+  // changing pw means i DO have acces to email, must send email , then update password.
+  // but this page has no protection on if the person has accepted the email or received it. if someone accesses the url they can just send it- reset pass with email again.. what if...
+  // what if ON the pw reset, i change the email value to a dynamic one using the users data, then in the email, tell them the id
+  // then when they push to update the pw => in the backend i check the param id vs the email it should be...
+
+  // whats better?
   // sets loading to false once the type is read so that the user can fill what they need
   useEffect(() => {
     if (type !== "") {
       setIsLoading(false);
       setCapitalizedType(
-        type.substring(0, 1).toUpperCase() + type.substring(1)
+        type.substring(0, 1).toUpperCase() + type.substring(1),
       );
     }
   }, [type]);
@@ -64,7 +68,6 @@ export default function ChangeUserInformationPage({
     );
   }
 
-  
   return (
     <div className="p-4">
       <h1>Change {capitalizedType}</h1>
